@@ -21,7 +21,7 @@ task Server(type: JavaExec) {
 
   main = 'SockServer'
 
-  args 8000
+  args 8888
 }
 
 task Client(type: JavaExec) {
