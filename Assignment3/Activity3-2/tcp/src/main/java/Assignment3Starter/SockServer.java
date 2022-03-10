@@ -22,7 +22,19 @@ import org.json.*;
  * @version August 2020
  * 
  * 
- * Describing the simple protocol here
+ * Description:
+ * 		start is used to gather the information for the start condition of the system. (given)
+ *
+ * 		name is used to collect the data for the users name.
+ * 						"name" is only used here to send the string appropriately.
+ *
+ * 		n_question is used to receive the number of questions/images the user would like to play with.
+ * 						"q_num" is the variable used to perform this.(number of questions)
+ *
+ * 		begin is used for the main game.
+ * 						"new" is used to focus when a new game is being requested(after they play once)
+ * 						"payload" is used for image sending.
+ * 						"extra_payload_info" is used for additional information needed to guide the game forwward.
  * 
  * request 										(starting the connection)
  * 	type: start
@@ -93,29 +105,15 @@ import org.json.*;
  * 				and will work properly as soon as you input "start"
  *
  *
- * ============================================================================================
- * request
- * type: quit
- * payload: <String>
- *
- * Response
- * OK
- * type: payload <String>
- *
- *
- * Error
- * type error3
- * message: <String> error message
-
  *
  * @modified-by David Clements <dacleme1@asu.edu> September 2020
  */
 public class SockServer {
 
 	static Stack<String> imageSource = new Stack<String>();
-	public static int seconds = 0;
+	public static int seconds = 0;			//used for timer
 	public static int q_num = 0;			// Number of questions they wish to answer
-	public static Timer game_timer;
+	public static Timer game_timer;			//the timer
 
 	public static void main (String args[]) {
 		Socket sock;
@@ -126,20 +124,20 @@ public class SockServer {
 			System.out.println("Server ready for connetion");
 
 			// placeholder for the person who wants to play a game
-			String name = "";
-			int points = 0;
+			String name = "";		//stores the name
+			int points = 0;			//points for the game
 			int clientID = 0;
-			String num_q = "";
+			String num_q = "";		//string representation of the num. of questions input
 			int turn = 0;			//Used to keep track of the turn they are on
 			int internal_count = 0;  //Used for the more button -> pushes on to the next image within the photo_arr
 //			int q_num = 0;			// Number of questions they wish to answer
 			int current_photo_count = 0;
 			int guesses = 0;
-			boolean game_started = false;
+			boolean game_started = false;		//Is a flag used to signal game has started
 			int count = 0;
-			int more_count = 0;
+			int more_count = 0;					//track number of mores inputed
 			boolean next_game = false;
-			boolean end_game = false;  // governs win or lose conditions
+			boolean end_game = false;  			// governs win or lose conditions(a flag)
 			boolean game_complete = false;
 
 			boolean game_check;
@@ -168,7 +166,7 @@ public class SockServer {
 				if (json.getString("type").equals("start")){
 					
 					System.out.println("- Got a start");
-				
+					//signals for name collection
 					response.put("type","hello" );
 					response.put("value","Hello, please tell me your name." );
 					sendPic("img/hi.png", response); // calling a method that will manipulate the image and will make it send ready
@@ -178,7 +176,7 @@ public class SockServer {
 				else if (json.getString("type").equals("name")){		//<------------ NAME
 
 					//System.out.println("- Got a start");
-
+					//collects and stores the name (takes anything for the name0
 					response.put("type", "name");
 					response.put("name", json.getString("name"));
 					name = json.getString("name");
@@ -236,7 +234,7 @@ public class SockServer {
 							q_num = Integer.parseInt((String) response.get("q_num"));
 							response.put("q_num", "Alright " + name + ", " + num_q + " questions it is! Type \"Start\" when you are ready to play.");
 
-						}}catch (NumberFormatException e){
+						}}catch (NumberFormatException e){ //if something other than a number is input we signal to user
 							response.put("type", "error1");
 							response.put("message", "You didnt enter any thing in? must enter a integer");
 						}
@@ -258,23 +256,26 @@ public class SockServer {
 													"img/pug/pug1.png","img/pug/pug2.png","img/pug/pug3.png",
 													"img/puppy/puppy1.png","img/puppy/puppy2.png","img/puppy/puppy3.png"};
 
-					game_check = true;
+					game_check = true;		//used as preventive measure on win/lose condition
 					response.put("new_game", "old");
 
-//					response.put("extra_payload_info", "wow");
+					//quick hops to locations in image array
 					int start_of_cat = 3;
 					int start_of_cucumber = 6;
 					int start_of_hat = 9;
 					int start_of_pug = 12;
 					int start_of_puppy = 15;
 
-
+					//recieve entering game signal
 					response.put("type", "begin");
+					//receives user input
 					response.put("payload", json.getString("payload"));
 					System.out.println( "receiving----> " + response);
+					//stores user input for use
 					String user_input = response.getString("payload");
 					System.out.println(user_input);
 
+					//whats left from one of my attempts to implement quit
 //					if(user_input.equals("quit")){
 //						response.put("extra_payload_info", "quit");
 //						response.put("payload", "shutting down");
@@ -313,13 +314,19 @@ public class SockServer {
 
 
 
-						// ****IMPLEMENT TIMER START HERE****				<<<<<<----------
+						//new timer for each game
 						game_timer = new Timer();
+						//placement of where in the img_arr we are(acts a  i from for loop)
 						internal_count = 0;
+						//new game signals time refresh
 						seconds = 0;
+						//wishing them luck
 						response.put("extra_payload_info", "good luck, timer has now stared!");
+						//send opening image
 						sendPic(photo_arr[internal_count],response);
+						//signals game has started
 						game_started = true;
+						//times begins
 						game_timer.scheduleAtFixedRate(task,1000,1000); //<<<<<<<------timer
 					}
 					//--------------------------------------------------
@@ -332,8 +339,7 @@ public class SockServer {
 							//System.out.println("div of internal: " + (internal_count % 3));
 							//System.out.println("more (in): " + internal_count);
 							sendPic(photo_arr[internal_count],response);
-
-
+							//if reach max more input we let the user know
 						}else if(more_count == 2){
 							response.put("type", "error2");
 							response.put("message", "Cannot get any more \"more's\" for this round");
@@ -341,19 +347,26 @@ public class SockServer {
 
 					}
 					//--------------------------------------------------
+					//next functionality
 					if(user_input.equals("next")){
 						if(turn == 0){
+							//prevents early image forward movement
 							response.put("extra_payload_info","Easy now");
 						}
 						else if(turn == 1){
 							response.put("extra_payload_info","You lose a point for using \"next\"");
+							//if on car move to cat
 							internal_count = start_of_cat;
+							//send new image
 							sendPic(photo_arr[internal_count],response);
+							//increment the turn to keep pace with img_array location
 							turn++;
+							//user loses point for skipping
 							points--;
 						}
 						else if(turn == 2){
 							response.put("extra_payload_info","You lose a point for using \"next\"");
+							//if on cat move to cucumber.
 							internal_count = start_of_cucumber;
 							sendPic(photo_arr[internal_count],response);
 							turn++;
@@ -400,29 +413,41 @@ public class SockServer {
 						System.out.println("Turn = " + turn);
 						if(turn == 1){
 							if(!user_input.equals("car")){
+								//if not correct answer we keep displaying this message no matter what
 								response.put("extra_payload_info", "Try Again!, if you cannot figure it out enter:\"more\". You can enter:\"next\" but you will lose a point  --> 1");
 							}
 							else if(user_input.equals("car")){
-								System.out.println("in car");
+								System.out.println("in car"); //for grading purposes
+								//if over time, user loses
 								if(seconds >= (30 * q_num)){
 									System.out.println("in car timer check");
+									//signals the game has ended
 									end_game = true;
+									//additional game state check
 									game_check = false;
 //									game_timer.cancel();
 								}
+								//gainz points
 								points++;
+								//congradulate
 								response.put("extra_payload_info","good job, you got it! Total points = " + points);
+								//increase turn
 								turn++;
-								System.out.println("(car success)Turn = " + turn);
+								System.out.println("(car success)Turn = " + turn);	//for grading
+								//move to next image
 								internal_count = start_of_cat;
+								//send said image
 								sendPic(photo_arr[internal_count],response);
-//								internal_count = 3;
+
 								System.out.println("(car success)Internal_count = " + internal_count);
+								//refresh more input count for next image guessing
 								more_count = 0;
 								System.out.println("(car success)More_count = " + more_count);
 								//points++;
+								//decrement number of question to track win/lose state
 								q_num--;
 								System.out.println("(q_num-- " + q_num);
+								//additional state measures
 								game_check = true;
 							}
 						}
@@ -562,14 +587,23 @@ public class SockServer {
 
 					//lose condition
 					if(end_game == true){
+						//loop for new game
 						response.put("new_game", "new");
+						//send loase image
 						sendPic("img/lose.jpg",response);
+						//let the user know their options
 						response.put("extra_payload_info","GAME OVER - > YOU HAVE RUN OUT OF TIME" + "Play again? just enter your name again!");
+						//reset img_array location
 						internal_count = 0;
+						//cancel current time for next game
 						game_timer.cancel();
+						//set turns back to zero
 						turn = 0;
+						//set seconds back to zero
 						seconds = 0;
+						//set points back to zero
 						points = 0;
+						//resent game win condition back to normal
 						end_game = false;
 
 					}
