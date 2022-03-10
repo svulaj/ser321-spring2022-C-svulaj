@@ -102,8 +102,22 @@
  * @modified-by David Clements <dacleme1@asu.edu> September 2020
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
- # e) 
+# e)
+   I made the program robust begining with the name input.
+      I made it so that anything the user enters in for a name is accepted as a name. Not very robust but i figured maybe "user names" might want to be added(this includes names with integers in it).
+   Second, for the number of questions entered.
+      I made the server handle all "empty strings", "not integer values", "greater than 6" inputs. The sever will not crash because of this.
+   Third, For the main game.
+      The game is able to handle all cases other than the correct answer. This is done by any cases moving forward in the game while it it being played is completely dependent on whether or not the user inputs a correct answer or the "next" option.
+      The may enter "more" but it will not allow them to continue till "next" or the right answer is input. 
 
+
+# f)
+      Task1 = https://youtu.be/FSIl7WfXr9Q  
+      Task2 = https://youtu.be/bJ8P8vQWxAM 
+
+# g)
+      If we decided to use UDP instead of TCP we may have issues when sending images from the client to the server. To elaborate, TCP has a lot more overhead due to the three-way handshake which in return allows for reliability. In the program, when sending an image, there is a buffer size which causes large images to be split into different packages depending if they exceded the buffer size. TCP ensures that all packets make it to their destination and get put together in the correct way. UDP does not do this, it will send everything over faster but does not guarentee that everything makes it there correctly. 
 
 
 
