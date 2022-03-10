@@ -60,8 +60,8 @@ public class ClientGui implements Assignment3Starter.OutputPanel.EventHandlers {
 
 	//==============================================================================================
 	// TODO: SHOULD NOT BE HARDCODED
-	String host = "localhost";
-	int port = 9000;
+	String host;// = "localhost";
+	int port; //= 9000;
 
 	/**
 	 * Construct dialog
@@ -333,8 +333,11 @@ public class ClientGui implements Assignment3Starter.OutputPanel.EventHandlers {
 
 
 		try {
-			String host = "localhost";
-			int port = 8888;
+//			System.out.println(args[0]);
+//			System.out.println(args[1]);
+
+			String host = args[0];
+			int port = Integer.parseInt(args[1]);
 
 
 			ClientGui main = new ClientGui(host, port);

@@ -20,7 +20,16 @@ task runClient(type: JavaExec) {
 
   main = 'Assignment3Starter.ClientGui'
   standardInput = System.in
-  args "1"
+
+  args 'localhost' // host
+  args '8080' // port
+
+  // run with arguments e.g.: gradle Client -Phost=localhost -Pport=9099
+  if (project.hasProperty("host") && project.hasProperty('port')) {
+    args(project.getProperty('host'), project.getProperty('port'));
+  }
+
+
 }
 
 task runServer(type: JavaExec) {
@@ -30,4 +39,12 @@ task runServer(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 
   main = 'Assignment3Starter.SockServer'
+
+  
+  args '8080'
+  
+    if (project.hasProperty('port')) {
+    args(project.getProperty('port'));
+  }
+  
 }

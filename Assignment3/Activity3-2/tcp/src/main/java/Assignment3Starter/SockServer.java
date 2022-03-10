@@ -122,7 +122,7 @@ public class SockServer {
 		try {
 			
 			//opening the socket here, just hard coded since this is just a bas example
-			ServerSocket serv = new ServerSocket(8888); // TODO, should not be hardcoded
+			ServerSocket serv = new ServerSocket(Integer.parseInt(args[0])); // TODO, should not be hardcoded
 			System.out.println("Server ready for connetion");
 
 			// placeholder for the person who wants to play a game

@@ -39,40 +39,40 @@ class SockClient {
 
       final JSONObject request = new JSONObject();
       //////////////////////////////////////////////////////////////////////////////////////////////////////
-      //first choice -> permutation
-      if (choice.equals("v")) { // <<<<<<<<----------------------------
-        System.out.println("What is the number of the objects involved? **please choose numbers between 10-0** & **1st number must always be larger than 2nd number**");
+      
+      if (choice.equals("m")) { // <<<<<<<<----------------------------
+        System.out.println("What is the number whose multiplicity you wish to check? enter first number");
         //handles if no entry is input
         do{
-          System.out.println("enter a value");
+          System.out.println("first number plzzz");
           input = scanner.nextLine();
         }while(input.isEmpty());
 
         // write the whole message
-        request.put("type", "vowels");
-        request.put("data", input);
+        request.put("type", "multiplicity");
+        request.put("data1", input);
 
-        System.out.println("What is the number of the objects available");
+        System.out.println("2nd number");
         //handles if no entry is input
         do{
-          System.out.println("Enter a word to check");
+          System.out.println("Enter a number - 2");
           input2 = scanner.nextLine();
         }while(input2.isEmpty());
 
         
-        request.put("data", input2);
+        request.put("data2", input2);
       }
       //////////////////////////////////////////////////////////////////////////////////////////////////////
       //second choice -> palindrome
-      else if (choice.equals("m")) {
-        System.out.println("What is the number whose multiplicity you wish to check?");
+      else if (choice.equals("v")) {
+        System.out.println("enter word?");
         //handles if no entry is input
         do{
         input = scanner.nextLine();
         }while(input.isEmpty());
 
         // grabs the String a user input and stores it in pal - data
-        request.put("type", "multiplicity");
+        request.put("type", "vowels");
         request.put("data", input);
 
       } else if (choice.equals("exit")) {
@@ -97,17 +97,18 @@ class SockClient {
         System.out.println("There was an error: " + response.getString("message"));
       } 
       //Final output section
-      else {
-        // System.out.println(response.getInt("data"));
-        // System.out.println(response.getInt("data2"));
-        if(choice.equals("vowels")){
-          System.out.println("vowel count is: " + response.getInt("data"));
-        }
-        if(choice.equals("pal")){
-          System.out.println("multiplicity is: " + response.getString("data"));
-        }
-      }
-
+      // else {
+      //   // System.out.println(response.getInt("data"));
+      //   // System.out.println(response.getInt("data2"));
+      //   if(choice.equals("vowels")){
+      //     System.out.println("vowel count is: " + response.getString("data"));
+      //   }
+      //   if(choice.equals("m")){
+      //     System.out.println("multiplicity is1: " + response.getString("data1") + "multiplicity is1: " + response.getString("data2"));
+      //   }
+      // }
+        System.out.println(response.getString("data"));
+        // System.out.println(response.getString("data1 ") + );
       //close the complete connection after talking to the server
       sock.close(); // close socked after sending
       os.close();
