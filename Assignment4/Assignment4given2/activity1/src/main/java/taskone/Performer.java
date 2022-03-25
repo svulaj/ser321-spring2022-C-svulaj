@@ -31,6 +31,7 @@ class Performer {
         this.state = strings;
     }
 
+
     public JSONObject add(String str) {
         JSONObject json = new JSONObject();
         json.put("datatype", 1);
@@ -39,6 +40,41 @@ class Performer {
         json.put("data", state.toString());
         return json;
     }
+
+    public JSONObject  remove(int index) {
+        JSONObject json = new JSONObject();
+        json.put("datatype", 2);
+        json.put("type", "remove");
+        String removed = state.remove(index);
+        json.put("data", "Removed the String \"" + removed + "\".");
+        return json;
+    }
+    
+    public JSONObject display() {
+        JSONObject json = new JSONObject();
+        json.put("datatype", 3);
+        json.put("type", "display");
+        json.put("data", state.toString());
+        return json;
+    }
+    
+    public JSONObject count() {
+        JSONObject json = new JSONObject();
+        json.put("datatype", 4);
+        json.put("type", "count");
+        json.put("data", state.size());
+        return json;
+    }
+    
+    public JSONObject reverse(int index) {
+        JSONObject json = new JSONObject();
+        json.put("datatype", 5);
+        json.put("type", "reverse");
+        state.reverse(index);
+        json.put("data", state.toString());
+        return json;
+    }
+    
 
     public static JSONObject error(String err) {
         JSONObject json = new JSONObject();

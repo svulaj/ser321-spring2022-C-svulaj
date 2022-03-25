@@ -25,4 +25,17 @@ class StringList {
     public String toString() {
         return strings.toString();
     }
+
+    public String remove(int index) {
+        String data = strings.get(index);
+        strings.remove(index);
+        return data;
+    }
+
+    public void reverse(int index) {
+        StringBuilder reversedWord = new StringBuilder();
+        reversedWord.append(strings.get(index));
+        reversedWord.reverse();
+        strings.set(index, reversedWord.toString());
+    }
 }
