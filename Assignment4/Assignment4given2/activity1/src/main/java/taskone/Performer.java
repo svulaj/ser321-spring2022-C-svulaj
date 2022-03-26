@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
 import org.json.JSONObject;
 
 /**
@@ -43,10 +45,15 @@ class Performer {
 
     public JSONObject  remove(int index) {
         JSONObject json = new JSONObject();
-        json.put("datatype", 2);
-        json.put("type", "remove");
-        String removed = state.remove(index);
-        json.put("data", "Removed the String \"" + removed + "\".");
+        //Error check to make sure an integer was in fact passed to the server
+        if(index > state.size()) {
+            json = error("Error 2 - out of bounds, re-enter a number within bounds");
+        }else {
+            json.put("datatype", 2);
+            json.put("type", "remove");
+            String removed = state.remove(index);
+            json.put("data", "Removed the String \"" + removed + "\".");
+        }
         return json;
     }
     
@@ -62,17 +69,22 @@ class Performer {
         JSONObject json = new JSONObject();
         json.put("datatype", 4);
         json.put("type", "count");
-        json.put("data", state.size());
+        json.put("data", String.valueOf(state.size()));
         return json;
     }
     
     public JSONObject reverse(int index) {
         JSONObject json = new JSONObject();
-        json.put("datatype", 5);
-        json.put("type", "reverse");
-        state.reverse(index);
-        json.put("data", state.toString());
-        return json;
+      //Error check to make sure an integer was in fact passed to the server
+        if(index > state.size()) {
+            json = error("Error 2 - out of bounds, re-enter a number within bounds");
+        }else {
+            json.put("datatype", 5);
+            json.put("type", "reverse");
+            state.reverse(index);
+            json.put("data", state.toString());
+        }
+            return json;
     }
     
 
@@ -92,7 +104,9 @@ class Performer {
             System.out.println("Server connected to client:");
             while (!quit) {
                 byte[] messageBytes = NetworkUtils.receive(in);
+                //this is the data storage spot for the data coming in
                 JSONObject message = JsonUtils.fromByteArray(messageBytes);
+              //this is the data storage spot for the data we want to send out
                 JSONObject returnMessage = new JSONObject();
    
                 int choice = message.getInt("selected");
@@ -100,6 +114,36 @@ class Performer {
                         case (1):
                             String inStr = (String) message.get("data");
                             returnMessage = add(inStr);
+                            break;
+                        case (2):
+                            //Checks if data is what we need
+                            try {
+                                String str = (String) message.get("data");
+                                int incomingInt =  Integer.parseInt(str);
+                                returnMessage = remove(incomingInt);
+                            }catch (Exception e) {
+                                returnMessage = error("Error 1 - not and INTERGER");
+                            }
+                            break;
+                        case (3):
+                            returnMessage = display();
+                            break;
+                        case (4):
+                            returnMessage = count();
+                            break;
+                        case (5):
+                            try {
+                                String dataStr = (String) message.get("data");
+                                int inInt =  Integer.parseInt(dataStr);
+                                returnMessage = reverse(inInt);
+                            }catch (Exception e) {
+                                returnMessage = error("Error 1 - not and INTERGER");
+                            }
+                              //NEED TO IMPLEMENT QUIT AT SOME POINT
+                              //NEED TO IMPLEMENT QUIT AT SOME POINT
+                              //NEED TO IMPLEMENT QUIT AT SOME POINT
+                        
+                            
                             break;
                         default:
                             returnMessage = error("Invalid selection: " + choice 

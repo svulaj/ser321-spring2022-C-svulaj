@@ -50,11 +50,18 @@ public class Client {
     /**
      * Function JSONObject remove().
      */
-    public static JSONObject pop() {
+    public static JSONObject remove() {
         String strToSend = null;
         int inNum;
         JSONObject request = new JSONObject();
         request.put("selected", 2);
+        try {
+            System.out.print("Please input the positioon you would like to remove: ");
+            strToSend = stdin.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        request.put("data", strToSend);
         return request;
     }
 
@@ -81,36 +88,18 @@ public class Client {
     /**
      * Function JSONObject reverse().
      */
-    public static JSONObject switching() {
+    public static JSONObject reverse() {
         String strToSend = null;
         int inNum;
         JSONObject request = new JSONObject();
         request.put("selected", 5);
-        int numInput = 0;
-        int first = 0;
-        int last = 0;
-        while (true) {
-            System.out.print("Please input the index: ");
-            try {
-                strToSend = stdin.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                inNum = Integer.parseInt(strToSend);
-                if (numInput == 0) {
-                    first = inNum;
-                    numInput = 1;
-                } else {
-                    last = inNum;
-                    break;
-                }
-                
-            } catch (NumberFormatException ne) {
-                System.out.println("Input is not number, continue");
-            }
+        try {
+            System.out.print("Please input the position you would like to reverse: ");
+            strToSend = stdin.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        request.put("data", first+ " " + last);
+        request.put("data", strToSend);
         return request;
     }
 
@@ -118,10 +107,11 @@ public class Client {
      * Function JSONObject quit().
      */
     public static JSONObject quit() {
-        JSONObject request = new JSONObject();
-        request.put("selected", 0);
-        request.put("data", ".");
-        return request;
+        return add();
+      //NEED TO IMPLEMENT QUIT AT SOME POINT
+      //NEED TO IMPLEMENT QUIT AT SOME POINT
+      //NEED TO IMPLEMENT QUIT AT SOME POINT
+        
     }
 
     /**
@@ -152,38 +142,38 @@ public class Client {
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();
             Scanner input = new Scanner(System.in);
-            int choice;
+            String choice;
             do {
                 System.out.println();
                 // TODO: you will need to change the menu based on the tasks for this assignment, see Readme!
                 System.out.println("Client Menu");
                 System.out.println("Please select a valid option (1-5). 0 to diconnect the client");
                 System.out.println("1. add <string> - adds a string to the list and display it");
-                System.out.println("2. pop - remove the top elemnt");
+                System.out.println("2. remove - remove a specified elemnt");
                 System.out.println("3. display - display the list");
                 System.out.println("4. count - returns the elements in the list");
-                System.out.println("5. switch <int> <int> - switch two string");
+                System.out.println("5. reverse - reverse a target string");
                 System.out.println("0. quit");
                 System.out.println();
-                choice = input.nextInt(); // what if not int.. should error handle this
+                choice = input.nextLine(); // what if not int.. should error handle this
                 JSONObject request = null;
                 switch (choice) {
-                    case (1):
+                    case ("1"):
                         request = add();
                         break;
-                    case (2):
-                        request = pop();
+                    case ("2"):
+                        request = remove();
                         break;
-                    case (3):
+                    case ("3"):
                         request = display();
                         break;
-                    case (4):
+                    case ("4"):
                         request = count();
                         break;
-                    case (5):
-                        request = switching();
+                    case ("5"):
+                        request = reverse();
                         break;
-                    case (0):
+                    case ("0"):
                         request = quit();
                         break;
                     default:
