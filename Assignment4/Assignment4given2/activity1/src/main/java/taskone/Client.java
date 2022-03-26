@@ -107,11 +107,10 @@ public class Client {
      * Function JSONObject quit().
      */
     public static JSONObject quit() {
-        return add();
-      //NEED TO IMPLEMENT QUIT AT SOME POINT
-      //NEED TO IMPLEMENT QUIT AT SOME POINT
-      //NEED TO IMPLEMENT QUIT AT SOME POINT
-        
+        JSONObject request = new JSONObject();
+        request.put("selected", 0);
+        request.put("data", "");
+        return request;
     }
 
     /**

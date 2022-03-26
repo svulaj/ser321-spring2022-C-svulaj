@@ -86,8 +86,14 @@ class Performer {
         }
             return json;
     }
+    public static JSONObject quit(Socket sock) {
+        JSONObject json = new JSONObject();
+        json.put("datatype", 0);
+        json.put("type", "quit");
+        json.put("data", "quitting");
+            return json;
+    }
     
-
     public static JSONObject error(String err) {
         JSONObject json = new JSONObject();
         json.put("error", err);
@@ -116,7 +122,7 @@ class Performer {
                             returnMessage = add(inStr);
                             break;
                         case (2):
-                            //Checks if data is what we need
+                            //Checks if data is what we need otherwise 
                             try {
                                 String str = (String) message.get("data");
                                 int incomingInt =  Integer.parseInt(str);
@@ -139,11 +145,10 @@ class Performer {
                             }catch (Exception e) {
                                 returnMessage = error("Error 1 - not and INTERGER");
                             }
-                              //NEED TO IMPLEMENT QUIT AT SOME POINT
-                              //NEED TO IMPLEMENT QUIT AT SOME POINT
-                              //NEED TO IMPLEMENT QUIT AT SOME POINT
-                        
-                            
+                            break;
+                        case (0):
+                            returnMessage = quit(conn);  
+                            quit = true;
                             break;
                         default:
                             returnMessage = error("Invalid selection: " + choice 

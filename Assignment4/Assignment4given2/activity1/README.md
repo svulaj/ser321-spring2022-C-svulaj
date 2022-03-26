@@ -1,6 +1,12 @@
 # Assignment 4 Activity 1
 ## Description
 The initail Performer code only has one function for adding strings to an array: 
+ThreadedServer: can be ran with gradle, there is a specific task that can run it with an example command.
+ThreadPoolServer:
+
+# Assignment 4 Activity 2
+## Description
+The initail Performer code only has one function for adding strings to an array: 
 
 ## Protocol
 
@@ -26,7 +32,11 @@ data <string>: add = new list, remove = removed element, display = current list,
 
 error response: {"type": "error", "message"": <error string> }
 Should give good error message if something goes wrong which explains what went wrong
-
+String is:
+    - "Error 1 - not and INTERGER" 
+            Indicates that there was an error within the doPerform method within performer.java. Where the value passed into the method for a particular service was not the one permitted.
+    - "Error 2 - out of bounds, re-enter a number within bounds"
+            Indicates that the user input for a particular service involving the list was outside of the bounds of the current list that the user is trying to operate on.
 
 ## How to run the program
 ### Terminal

@@ -4,9 +4,13 @@ taskone/NetworkUtils.java
  taskone.NetworkUtils
 taskone/StringList.java
  taskone.StringList
+taskone/ThreadPoolServer.java
+ taskone.ThreadPoolServer
 taskone/Server.java
  taskone.Server
 taskone/Client.java
  taskone.Client
+taskone/ThreadedServer.java
+ taskone.ThreadedServer
 taskone/Performer.java
  taskone.Performer
