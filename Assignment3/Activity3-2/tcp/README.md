@@ -117,7 +117,7 @@
       Task2 = https://youtu.be/bJ8P8vQWxAM 
 
 # g)
-      If we decided to use UDP instead of TCP we may have issues when sending images from the client to the server. To elaborate, TCP has a lot more overhead due to the three-way handshake which in return allows for reliability. In the program, when sending an image, there is a buffer size which causes large images to be split into different packages depending if they exceded the buffer size. TCP ensures that all packets make it to their destination and get put together in the correct way. UDP does not do this, it will send everything over faster but does not guarentee that everything makes it there correctly. 
+      If UDP was used instead of TCP issues in sending images would/could be an issue. Since I did not used byte stream its not so clearly seen but when images are sent over the packets are ensured through TCP because of the three-way handshake. The reliability of the image data would be compromised and may not comeout out as we intended. We may lack in speed with TCP but it sure beats UDP where if the image doesnt fully make it over our entire game could be compromised, after all it is an IMAGE guessing game. 
 
 
 
