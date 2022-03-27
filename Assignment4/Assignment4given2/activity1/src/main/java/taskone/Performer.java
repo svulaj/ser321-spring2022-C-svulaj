@@ -28,12 +28,24 @@ class Performer {
     private StringList state;
     private Socket conn;
 
+    /**
+     * Description: Constructor for performance 
+     * @param sock = Socket
+     * @param strings = String list to be used
+     * @author shaun vulaj
+     */
     public Performer(Socket sock, StringList strings) {
         this.conn = sock;
         this.state = strings;
     }
 
-
+    /**
+     * Function JSONObject add().
+     * Description: Adds a string to the objects StringList
+     * @param str = entry string
+     * @return Json object
+     * @author shaun vulaj
+     */
     public JSONObject add(String str) {
         JSONObject json = new JSONObject();
         json.put("datatype", 1);
@@ -42,7 +54,13 @@ class Performer {
         json.put("data", state.toString());
         return json;
     }
-
+    /**
+     * Function JSONObject remove().
+     * Description: removes a string from the objects StringList
+     * @param index = location of target string
+     * @return Json object
+     * @author shaun vulaj
+     */
     public JSONObject  remove(int index) {
         JSONObject json = new JSONObject();
         //Error check to make sure an integer was in fact passed to the server
@@ -57,6 +75,12 @@ class Performer {
         return json;
     }
     
+    /**
+     * Function JSONObject display().
+     * Description: Displays objects StringList
+     * @return Json object
+     * @author shaun vulaj
+     */
     public JSONObject display() {
         JSONObject json = new JSONObject();
         json.put("datatype", 3);
@@ -65,6 +89,12 @@ class Performer {
         return json;
     }
     
+    /**
+     * Function JsonObject count()
+     * Description: counts all the strings within the list(size)
+     * @return Json object
+     * @author shaun vulaj
+     */
     public JSONObject count() {
         JSONObject json = new JSONObject();
         json.put("datatype", 4);
@@ -73,6 +103,13 @@ class Performer {
         return json;
     }
     
+    /**
+     * Function JsonObject reverse()
+     * Description: reverses a string within objects StringList
+     * @param index = Location of target string
+     * @return Json object
+     * @author shaun vulaj
+     */
     public JSONObject reverse(int index) {
         JSONObject json = new JSONObject();
       //Error check to make sure an integer was in fact passed to the server
@@ -86,6 +123,13 @@ class Performer {
         }
             return json;
     }
+    /**
+     * Function JsonObject quit()
+     * Description: disconnects client from server
+     * @param sock = Socket
+     * @return JsonObject
+     * @author shaun vulaj
+     */
     public static JSONObject quit(Socket sock) {
         JSONObject json = new JSONObject();
         json.put("datatype", 0);
@@ -93,7 +137,13 @@ class Performer {
         json.put("data", "quitting");
             return json;
     }
-    
+    /**
+     * Function JsonObject error()
+     * Description: shorthand method to display errors
+     * @param err = message to send
+     * @return Json object
+     * @author shaun vulaj
+     */
     public static JSONObject error(String err) {
         JSONObject json = new JSONObject();
         json.put("error", err);
@@ -112,9 +162,8 @@ class Performer {
                 byte[] messageBytes = NetworkUtils.receive(in);
                 //this is the data storage spot for the data coming in
                 JSONObject message = JsonUtils.fromByteArray(messageBytes);
-              //this is the data storage spot for the data we want to send out
+                //this is the data storage spot for the data we want to send out
                 JSONObject returnMessage = new JSONObject();
-   
                 int choice = message.getInt("selected");
                     switch (choice) {
                         case (1):
@@ -163,6 +212,7 @@ class Performer {
             System.out.println("close the resources of client ");
             out.close();
             in.close();
+//            quit = false;
         } catch (IOException e) {
             e.printStackTrace();
         }

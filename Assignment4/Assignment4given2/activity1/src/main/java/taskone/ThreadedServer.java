@@ -37,16 +37,16 @@ public class ThreadedServer  extends Thread{
     
     public static void main(String args[]) {
         Socket sock;
+        
         int id = 0;
         StringList stringsList = new StringList();
+        
         try {
-          if (args.length != 1) {
-            System.out.println("Usage: java ser321.sockets.ThreadedEchoServer" + " [portNum]");
-            System.exit(0);
-          }
+          
           int portNo = Integer.parseInt(args[0]);
           if (portNo <= 1024)
             portNo = 8888;
+          
           ServerSocket serv = new ServerSocket(portNo);
           while (true) {
             System.out.println("Threadedserver waiting for connects on port " + portNo);

@@ -32,6 +32,7 @@ public class Client {
 
     /**
      * Function JSONObject add().
+     * @author Melhase
      */
     public static JSONObject add() {
         String strToSend = null;
@@ -49,6 +50,9 @@ public class Client {
 
     /**
      * Function JSONObject remove().
+     * 
+     * Description: Creates new json and reads next line to send data to server
+     * @author shaunvulaj
      */
     public static JSONObject remove() {
         String strToSend = null;
@@ -67,6 +71,8 @@ public class Client {
 
     /**
      * Function JSONObject display().
+     * Description: Displays string(in our case the StringList)
+     * @author shaun vulaj
      */
     public static JSONObject display() {
         JSONObject request = new JSONObject();
@@ -77,6 +83,8 @@ public class Client {
 
     /**
      * Function JSONObject count().
+     * Description: Tells us the size of the list
+     * @author shaun vulaj
      */
     public static JSONObject count() {
         JSONObject request = new JSONObject();
@@ -87,6 +95,8 @@ public class Client {
 
     /**
      * Function JSONObject reverse().
+     * Description: Reverses a target string
+     * @author shaun vulaj
      */
     public static JSONObject reverse() {
         String strToSend = null;
@@ -105,6 +115,8 @@ public class Client {
 
     /**
      * Function JSONObject quit().
+     * Description: Exits clients connection to the server
+     * @author shaun vulaj
      */
     public static JSONObject quit() {
         JSONObject request = new JSONObject();
@@ -117,31 +129,26 @@ public class Client {
      * Function main().
      */
     public static void main(String[] args) throws IOException {
-        String host;
-        int port;
+        String host = null;
+        int port= -1;
         Socket sock;
         stdin = new BufferedReader(new InputStreamReader(System.in));
         try {
-            if (args.length != 2) {
-                // gradle runClient -Phost=localhost -Pport=9099 -q --console=plain
-                System.out.println("Usage: gradle runClient -Phost=localhost -Pport=9099");
-                System.exit(0);
-            }
-
-            host = args[0];
-            port = -1;
             try {
                 port = Integer.parseInt(args[1]);
+                host = args[0];
+                System.out.println("port= " + port);
             } catch (NumberFormatException nfe) {
                 System.out.println("[Port] must be an integer");
                 System.exit(2);
             }
-
+            
             sock = new Socket(host, port);
             OutputStream out = sock.getOutputStream();
             InputStream in = sock.getInputStream();
             Scanner input = new Scanner(System.in);
             String choice;
+            //General menu for the services
             do {
                 System.out.println();
                 // TODO: you will need to change the menu based on the tasks for this assignment, see Readme!
