@@ -63,54 +63,64 @@ class SockBaseServer {
                         .build();
                 response.writeDelimitedTo(out);
             }
-
-            // Example how to start a new game and how to build a response with the image which you could then send to the server
-            // LINE 67-108 are just an example for Protobuf and how to work with the differnt types. They DO NOT
-            // belong into this code. 
-            game.newGame(); // starting a new game
-
-            // adding the String of the game to 
-            Response response2 = Response.newBuilder()
-                .setResponseType(Response.ResponseType.TASK)
-                .setImage(game.getImage())
-                .setTask("Select a row and column.")
-                .build();
-
-            // On the client side you would receive a Response object which is the same as the one in line 70, so now you could read the fields
-            System.out.println("Task: " + response2.getResponseType());
-            System.out.println("Image: \n" + response2.getImage());
-            System.out.println("Task: \n" + response2.getTask());
-
-            // Creating Entry and Leader response
-            Response.Builder res = Response.newBuilder()
-                .setResponseType(Response.ResponseType.LEADER);
-
-            // building an Entry for the leaderboard
-            Entry leader = Entry.newBuilder()
-                .setName("name")
-                .setWins(0)
-                .setLogins(0)
-                .build();
-
-            // building another Entry for the leaderboard
-            Entry leader2 = Entry.newBuilder()
-                .setName("name2")
-                .setWins(1)
-                .setLogins(1)
-                .build();
-
-            // adding entries to the leaderboard
-            res.addLeader(leader);
-            res.addLeader(leader2);
-
-            // building the response 
-            Response response3 = res.build();
-
-            // iterating through the current leaderboard and showing the entries
-            for (Entry lead: response3.getLeaderList()){
-                System.out.println(lead.getName() + ": " + lead.getWins());
+            
+            while(true) {
+                op = Request.parseDelimitedFrom(in);
+                // Example how to start a new game and how to build a response with the image which you could then send to the server
+                // LINE 67-108 are just an example for Protobuf and how to work with the differnt types. They DO NOT
+                // belong into this code. 
+                if (op.getOperationType() == Request.OperationType.NEW) {
+                game.newGame(); // starting a new game
+                
+                
+                    
+                // adding the String of the game to 
+                Response response2 = Response.newBuilder()
+                    .setResponseType(Response.ResponseType.TASK)
+                    .setImage(game.getImage())
+                    .setTask("Select a row and column.")
+                    .build();
+                
+                // On the client side you would receive a Response object which is the same as the one in line 70, so now you could read the fields
+                System.out.println("Task: " + response2.getResponseType());
+                System.out.println("Image: \n" + response2.getImage());
+                System.out.println("Task: \n" + response2.getTask());
+                response2.writeDelimitedTo(out);  // <<<-----
+                }
+                else if (op.getOperationType() == Request.OperationType.LEADER) {
+                    System.out.println("you are trying to manage/access the leaderboard");
+                    // Creating Entry and Leader response
+                    Response.Builder res = Response.newBuilder()
+                        .setResponseType(Response.ResponseType.LEADER);
+                    
+                    // building an Entry for the leaderboard
+                    Entry leader = Entry.newBuilder()
+                        .setName("Shaun")
+                        .setWins(0)
+                        .setLogins(0)
+                        .build();
+        
+                    // building another Entry for the leaderboard
+                    Entry leader2 = Entry.newBuilder()
+                        .setName("Tommy")
+                        .setWins(1)
+                        .setLogins(1)
+                        .build();
+        
+                    // adding entries to the leaderboard
+                    res.addLeader(leader);
+                    res.addLeader(leader2);
+        
+                    // building the response 
+                    Response response3 = res.build();
+        
+                    // iterating through the current leaderboard and showing the entries
+                    for (Entry lead: response3.getLeaderList()){
+                        System.out.println(lead.getName() + ": " + lead.getWins());
+                    }
+                    response3.writeDelimitedTo(out);
+                }
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
