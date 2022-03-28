@@ -63,30 +63,67 @@ class SockBaseServer {
                         .build();
                 response.writeDelimitedTo(out);
             }
-            
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //GAME LOOP BEGINS
             while(true) {
-                op = Request.parseDelimitedFrom(in);
+                //#15 work
+                if(op.getOperationType() == Request.OperationType.QUIT) {
+                    clientSocket.close();
+                }else {
+                    op = Request.parseDelimitedFrom(in);
+                }
+                
                 // Example how to start a new game and how to build a response with the image which you could then send to the server
                 // LINE 67-108 are just an example for Protobuf and how to work with the differnt types. They DO NOT
                 // belong into this code. 
+                //===========================================================================================
                 if (op.getOperationType() == Request.OperationType.NEW) {
                 game.newGame(); // starting a new game
                 
-                
-                    
                 // adding the String of the game to 
                 Response response2 = Response.newBuilder()
                     .setResponseType(Response.ResponseType.TASK)
                     .setImage(game.getImage())
-                    .setTask("Select a row and column.")
+                    .setTask("Select a row and column. or type 'exit' to disconnect ")
                     .build();
                 
                 // On the client side you would receive a Response object which is the same as the one in line 70, so now you could read the fields
                 System.out.println("Task: " + response2.getResponseType());
                 System.out.println("Image: \n" + response2.getImage());
                 System.out.println("Task: \n" + response2.getTask());
+                
+                
                 response2.writeDelimitedTo(out);  // <<<-----
                 }
+                else if (op.getOperationType() == Request.OperationType.ROWCOL) {
+                   
+                    //NEW --> LET TOMMY KNOW handles out of bounds
+                    if(op.getRow() > 6 || op.getRow() < 0 || op.getColumn() > 6 || op.getColumn() < 0){
+                        Response response3 = Response.newBuilder()
+                                .setResponseType(Response.ResponseType.ERROR).setMessage("You must enter a value within bounds" + 
+                        "E.G. not below zero and less than 7, or letters a - g").setTask("0").build();
+                        response3.writeDelimitedTo(out);
+                    }else {
+                        System.out.println("Row coming in is: " + op.getRow());
+                        System.out.println("Column coming in is: " + op.getColumn());
+                        
+                        game.replaceOneCharacter(op.getRow(), op.getColumn());
+                        
+                        game.getIdx();
+                        Response response2 = Response.newBuilder()
+                                .setResponseType(Response.ResponseType.TASK)
+                                .setImage(game.getImage())
+                                .setTask("you made a move and now the score is: " + String.valueOf(game.getIdx()))
+                                .build();
+                        response2.writeDelimitedTo(out);
+//                        game.replaceOneCharacter(port, port)
+                    }
+                    
+                    
+                    
+                    
+                }
+              //===========================================================================================
                 else if (op.getOperationType() == Request.OperationType.LEADER) {
                     System.out.println("you are trying to manage/access the leaderboard");
                     // Creating Entry and Leader response

@@ -8,6 +8,7 @@ import org.json.*;
 
 import buffers.RequestProtos.Request;
 import buffers.ResponseProtos.Response;
+import buffers.ResponseProtos.Response.ResponseType;
 import buffers.ResponseProtos.Entry;
 
 import java.util.*;
@@ -61,6 +62,8 @@ class SockBaseClient {
             // print the server response. 
             System.out.println(response.getMessage());
             
+            
+            
             while(quit == false) {
 //==================================================================================================================
             // MENU SECTION
@@ -83,11 +86,61 @@ class SockBaseClient {
                 break;
             }
             case "2": {
-                op = Request.newBuilder().setOperationType(Request.OperationType.NEW).setName(strToSend).build();
+                // BEGINING OF GAME
+                op = Request.newBuilder().setOperationType(Request.OperationType.NEW).build();
+                op.writeDelimitedTo(out);
+                response = Response.parseDelimitedFrom(in);
+                
+                //QUESTION PHASE
+                //write out
+                //asks the question
+                System.out.println(response.getImage() + "\n" + response.getTask());
+                op.writeDelimitedTo(out);
+                //read in
+                response = Response.parseDelimitedFrom(in);
+                strToSend = stdin.readLine();
+                //if the want to disconnect
+                if(strToSend.equals("exit")) {
+                    op = Request.newBuilder().setOperationType(Request.OperationType.QUIT).build();
+                    op.writeDelimitedTo(out);
+                    quit = true;
+                    break;
+                }
+                else if(!Character.isDigit(strToSend.charAt(1))) {
+                    System.out.println("Error-1 ---> You did not input a valid digit!");
+                }else if(strToSend.length() != 2) {
+                    System.out.println("Error 1 ---> You must end an input of (E.g. b0, a letter followed by a numeric value, no spaces)");
+                }else {
+                    strToSend = strToSend.toUpperCase();
+                    char row = strToSend.charAt(0);
+                    int col = Character.getNumericValue(strToSend.charAt(1));
+                    op = Request.newBuilder().setOperationType(Request.OperationType.ROWCOL).setRow(row - 'A').setColumn(col).build();
+                    op.writeDelimitedTo(out); 
+                }
+                response = Response.parseDelimitedFrom(in);
+//--------------------------------------------------------------------------
+                //ERROR HANDLING SECTION
+                // NEW - LET TOMMY KNOW
+                if(response.getResponseType() == ResponseType.ERROR) {
+                    if(response.getTask().equals("0")) {
+                        System.out.println(response.getMessage());
+                    }else {
+                        System.out.println("fart buckets");
+                    }
+//--------------------------------------------------------------------------
+                // if passes error handling print score and then update board
+                }else {
+                    System.out.println(response.getTask());
+                    System.out.println(response.getImage());
+                }
+                
+                
+                
                 break;
             }
             case "3": {
-                op = Request.newBuilder().setOperationType(Request.OperationType.QUIT).setName(strToSend).build();
+                op = Request.newBuilder().setOperationType(Request.OperationType.QUIT).build();
+                op.writeDelimitedTo(out);
                 quit = true;
                 break;
             }

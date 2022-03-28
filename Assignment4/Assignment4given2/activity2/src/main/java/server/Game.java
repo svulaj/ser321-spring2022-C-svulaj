@@ -92,7 +92,7 @@ public class Game {
             hidden = new char[row][col];
             for(int i = 0; i < row; i++){
                 for(int j = 0; j < col; j++){
-                    hidden[i][j] = 'X';
+                    hidden[i][j] = '.';
                 }
             }
             setIdxMax(col * row);
@@ -125,6 +125,7 @@ public class Game {
             hidden[row][column] = ' ';
         }
         if (original[row][column] == 'x') {
+            hidden[row][column] = 'X';
             idx++;
         }
 
