@@ -70,8 +70,6 @@ class SockBaseClient {
 //==================================================================================================================
             // MENU SECTION
             System.out.println("* \nWhat would you like to do? \n 1 - to see the leader board \n 2 - to enter a game \n 3 - quit the game");
-            //response = Response.parseDelimitedFrom(in);
-            
             
             
                 strToSend = stdin.readLine();
@@ -132,10 +130,6 @@ class SockBaseClient {
                     response = Response.parseDelimitedFrom(in);
                     System.out.println(response.getImage() + "\n" + response.getTask());
                 }
-//                System.out.println("one cycle");
-                
-                
-                
 //--------------------------------------------------------------------------
                 //ERROR HANDLING SECTION
                 if(response.getResponseType() == ResponseType.ERROR) {
@@ -162,8 +156,6 @@ class SockBaseClient {
             default:
                 throw new IllegalArgumentException("Unexpected value: " + strToSend);
             }
-//            response = Response.parseDelimitedFrom(in);
-//            System.out.println(response.getLeader(0));
             }
         } catch (Exception e) {
             e.printStackTrace();

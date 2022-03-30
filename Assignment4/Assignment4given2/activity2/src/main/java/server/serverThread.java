@@ -166,28 +166,22 @@ public class serverThread extends Thread{
                 response2.writeDelimitedTo(out);  // <<<-----
                 }
                 else if (op.getOperationType() == Request.OperationType.ROWCOL) {
-                    
-                    
-                    
-//                   op.getOperationType().getNumber(); <<<<<------COULD BE USED AS FLAG
-                    //NEW --> LET TOMMY KNOW handles out of bounds
+                    //handles out of bounds 
                     if(op.getRow() > 6 || op.getRow() < 0 || op.getColumn() > 6 || op.getColumn() < 0){
                         Response response3 = Response.newBuilder()
                                 .setResponseType(Response.ResponseType.ERROR).setMessage("You must enter a value within bounds" + 
                         "E.G. not below zero and less than 7, or letters a - g").setTask("0").build();
                         response3.writeDelimitedTo(out);
                     }else {
+                        //displays incoming data
                         System.out.println("Row coming in is: " + op.getRow());
                         System.out.println("Column coming in is: " + op.getColumn());
                         
                         //gather old score for win or lose checking
                         int gameScore = game.getIdx();
-//                        System.out.println("GAMEScore-----> " + gameScore);
-//                        System.out.println("Score-----> " + game.getIdx());
                         game.replaceOneCharacter(op.getRow(), op.getColumn());
-//                        System.out.println("Score2----> " + game.getIdx());
-                        
-                        if(game.getIdx() >= 12) {
+                        //win condition section
+                        if(game.getIdx() >= 2) {
                             Response response2 = Response.newBuilder()
                                     .setResponseType(Response.ResponseType.WON)
                                     .setImage(game.getImage())
@@ -195,8 +189,8 @@ public class serverThread extends Thread{
                                     .build();
                             game.setIdx(0);
                             
-                            //update same players win count
-                           
+                            
+                          //update same players win count
                             for(int r = 0; r < dataList.size();r++) {
                                 System.out.println("updating wins");
                                 String strings[] = dataList.get(r).split(" ");
@@ -219,8 +213,7 @@ public class serverThread extends Thread{
                                     break;
                                 }
                             }
-                            
-                            
+                            //update leader board section
                             //res.setLeader(index, leader);
                             System.out.println();
                             leaderWrite(name, totalWins, logins);
@@ -232,7 +225,7 @@ public class serverThread extends Thread{
                             response2.writeDelimitedTo(out);
                         }
                         
-                        //miss condition
+                        //MISS condition
                         if(game.getIdx() == gameScore) {
                             Response response2 = Response.newBuilder()
                                     .setResponseType(Response.ResponseType.TASK)
@@ -242,7 +235,7 @@ public class serverThread extends Thread{
                             System.out.println("Score(no hit)----> " + game.getIdx());
                             response2.writeDelimitedTo(out);
 //                            game.replaceOneCharacter(port, port)
-                        }//win condition
+                        }//HIT condition
                         else if(game.getIdx() > gameScore) {
                             Response response2 = Response.newBuilder()
                                     .setResponseType(Response.ResponseType.TASK)
@@ -251,7 +244,6 @@ public class serverThread extends Thread{
                                     .build();
                             System.out.println("Score(hit)----> " + game.getIdx());
                             response2.writeDelimitedTo(out);
-//                            game.replaceOneCharacter(port, port)
                         }
                         System.out.println("========================================================");
                         
@@ -264,35 +256,9 @@ public class serverThread extends Thread{
               //===========================================================================================
                 else if (op.getOperationType() == Request.OperationType.LEADER) {
                     System.out.println("you are trying to manage/access the leaderboard");
-                    // Creating Entry and Leader response
-//                    Response.Builder res = Response.newBuilder()
-//                        .setResponseType(Response.ResponseType.LEADER);
-                    
-//                    // building an Entry for the leaderboard
-//                    Entry leader = Entry.newBuilder()
-//                        .setName("Shaun")
-//                        .setWins(0)
-//                        .setLogins(0)
-//                        .build();
-//        
-//                    // building another Entry for the leaderboard
-//                    Entry leader2 = Entry.newBuilder()
-//                        .setName("Tommy")
-//                        .setWins(1)
-//                        .setLogins(1)
-//                        .build();
-//        
-//                    // adding entries to the leaderboard
-//                    res.addLeader(leader);
-//                    res.addLeader(leader2);
-        
-                    // building the response 
+
                     Response response3 = res.build();
-                    
-                    // iterating through the current leaderboard and showing the entries
-//                    for (Entry lead: response3.getLeaderList()){
-//                        System.out.println(lead.getName() + ": " + lead.getWins());
-//                    }
+
                     response3.writeDelimitedTo(out);
                 }
             }
@@ -365,10 +331,7 @@ public class serverThread extends Thread{
     }
     
     public void leaderWrite(String name, int wins, int logins) {
-               
-        
-        
-                try {
+               try {
                    bufferedReader = new BufferedReader(new FileReader(inputFile));
                    bufferedWriter = new BufferedWriter(new FileWriter(inputFile));
                    
