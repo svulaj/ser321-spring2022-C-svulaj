@@ -187,7 +187,7 @@ public class serverThread extends Thread{
                         game.replaceOneCharacter(op.getRow(), op.getColumn());
 //                        System.out.println("Score2----> " + game.getIdx());
                         
-                        if(game.getIdx() >= 2) {
+                        if(game.getIdx() >= 12) {
                             Response response2 = Response.newBuilder()
                                     .setResponseType(Response.ResponseType.WON)
                                     .setImage(game.getImage())
