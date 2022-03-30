@@ -1,28 +1,29 @@
 package server;
 
-import java.net.*;
-import java.net.Authenticator.RequestorType;
-import java.awt.Checkbox;
-import java.awt.Frame;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import javax.imageio.plugins.tiff.FaxTIFFTagSet;
-
-//import org.jcp.xml.dsig.internal.dom.DOMSubTreeData;
-//import org.json.*;
-import org.w3c.dom.DOMStringList;
-
-import java.lang.*;
-
-import buffers.RequestProtos.Request;
 import buffers.RequestProtos.Logs;
 import buffers.RequestProtos.Message;
-import buffers.ResponseProtos.Response;
-import client.Player;
+import buffers.RequestProtos.Request;
 import buffers.ResponseProtos.Entry;
+import buffers.ResponseProtos.Response;
 
-class SockBaseServer {
+public class serverThread extends Thread{
     static String logFilename = "logs.txt";
     static String leaderFilename = "leaderboard.txt";
     ServerSocket serv = null;
@@ -44,14 +45,14 @@ class SockBaseServer {
     int totalWins = 0;
     int logins = 1;
     boolean sameLeader = false;
-    boolean gameAlreadyStarted = false;
+
     Response.Builder res = Response.newBuilder()
             .setResponseType(Response.ResponseType.LEADER);
 
-    public SockBaseServer(Socket sock, Game game){
+    public serverThread(Socket sock, Game game){
         this.clientSocket = sock;
         this.game = game;
-        //this.game.newGame();
+        game.newGame();
         try {
             in = clientSocket.getInputStream();
             out = clientSocket.getOutputStream();
@@ -59,11 +60,9 @@ class SockBaseServer {
             System.out.println("Error in constructor: " + e);
         }
     }
-
-    // Handles the communication right now it just accepts one input and then is done you should make sure the server stays open
-    // can handle multiple requests and does not crash when the server crashes
-    // you can use this server as based or start a new one if you prefer. 
-    public void start() throws IOException {
+    
+    
+    public void run(){
 
         //leaderRead();
         //leaderWrite("chungusChan ","70 ","5");
@@ -147,10 +146,9 @@ class SockBaseServer {
                 // belong into this code. 
                 //===========================================================================================
                 if (op.getOperationType() == Request.OperationType.NEW) {
-                
-//                    game = new Game();
-//                    game.newGame(); // starting a new game
-                
+                    
+//                game = new Game();
+//                game.newGame(); // starting a new game
                 
                 // adding the String of the game to 
                 Response response2 = Response.newBuilder()
@@ -212,23 +210,25 @@ class SockBaseServer {
                             //find player 
                             int index = 0;
                             for(index = 0; index < dataList.size(); index++) {
-                                System.out.println("looking for player to replace");
+                                //System.out.println("looking for player to replace");
                                 String strings[] = dataList.get(index).split(" ");
-                                System.out.println("REPLACING: " + strings[0] + " " + strings[1] + " " + strings[2]);
+                                //System.out.println("REPLACING: " + strings[0] + " " + strings[1] + " " + strings[2]);
                                 if(strings[0].equals(name)) {
-                                    System.out.println("replacing this leader in leader list: below");
-                                    System.out.println(res.getLeader(index));
+                                    //System.out.println("replacing this leader in leader list: below");
+                                    //System.out.println(res.getLeader(index));
                                     break;
                                 }
                             }
                             
                             
-                            res.setLeader(index, leader);
+                            //res.setLeader(index, leader);
                             System.out.println();
                             leaderWrite(name, totalWins, logins);
                             leaderRead();
-                          game = new Game();
-                          game.newGame(); // starting a new game
+                            
+                            game = new Game();
+                            game.newGame(); // starting a new game
+                            
                             response2.writeDelimitedTo(out);
                         }
                         
@@ -299,14 +299,17 @@ class SockBaseServer {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            if (out != null)  out.close();
-            if (in != null)   in.close();
-            if (clientSocket != null) clientSocket.close();
-            dataList = null;
+            try {
+                if (out != null)  out.close();
+                if (in != null)   in.close();
+                if (clientSocket != null) clientSocket.close();
+                dataList = null;
+            } catch (Exception e) {
+                System.out.println("wow");
+            }
         }
     }
-
-
+    
     /**
      * Writing a new entry to our log
      * @param name - Name of the person logging in
@@ -431,45 +434,5 @@ class SockBaseServer {
               }
         }
 }
-
-
-    public static void main (String args[]) throws Exception {
-        Game game = new Game();
-        //game.newGame();
-
-        if (args.length != 2) {
-            System.out.println("Expected arguments: <port(int)> <delay(int)>");
-            System.exit(1);
-        }
-        int port = 9099; // default port
-        int sleepDelay = 10000; // default delay
-        Socket clientSocket = null;
-        ServerSocket serv = null;
-
-        try {
-            port = Integer.parseInt(args[0]);
-            sleepDelay = Integer.parseInt(args[1]);
-        } catch (NumberFormatException nfe) {
-            System.out.println("[Port|sleepDelay] must be an integer");
-            System.exit(2);
-        }
-        try {
-            serv = new ServerSocket(port);
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.exit(2);
-        }
-        while (true) {
-        clientSocket = serv.accept();
-        serverThread server = new serverThread(clientSocket, game);
-        //SockBaseServer server = new SockBaseServer(clientSocket, game);
-        server.start();
-        }
-    }
-    
-
-    
-    
     
 }
-

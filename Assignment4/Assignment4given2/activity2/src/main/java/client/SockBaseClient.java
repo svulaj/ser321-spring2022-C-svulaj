@@ -7,6 +7,7 @@ import java.io.*;
 import org.json.*;
 
 import buffers.RequestProtos.Request;
+import buffers.RequestProtos.Request.OperationType;
 import buffers.ResponseProtos.Response;
 import buffers.ResponseProtos.Response.ResponseType;
 import buffers.ResponseProtos.Entry;
@@ -23,6 +24,8 @@ class SockBaseClient {
         InputStream in = null;
         int i1=0, i2=0;
         int port = 9099; // default port
+        
+        boolean gameAlreadyStarted = false;
 //=======================================================================================
         //SECTION FOR ARGUMENT PASSING
         // Make sure two arguments are given
@@ -53,9 +56,8 @@ class SockBaseClient {
             // write to the server
             out = serverSock.getOutputStream();
             in = serverSock.getInputStream();
-
+            //send out request for the begining of the game
             op.writeDelimitedTo(out);
-
             // read from the server
             response = Response.parseDelimitedFrom(in);
 
@@ -68,8 +70,12 @@ class SockBaseClient {
 //==================================================================================================================
             // MENU SECTION
             System.out.println("* \nWhat would you like to do? \n 1 - to see the leader board \n 2 - to enter a game \n 3 - quit the game");
-
-            strToSend = stdin.readLine();
+            //response = Response.parseDelimitedFrom(in);
+            
+            
+            
+                strToSend = stdin.readLine();
+                
             switch (strToSend) {
             case "1": {
                 System.out.println("you have chosen the leaderboard option");
@@ -87,18 +93,21 @@ class SockBaseClient {
             }
             case "2": {
                 // BEGINING OF GAME
+                System.out.println("Your move!");
                 op = Request.newBuilder().setOperationType(Request.OperationType.NEW).build();
                 op.writeDelimitedTo(out);
                 response = Response.parseDelimitedFrom(in);
                 
-                //QUESTION PHASE
-                //write out
-                //asks the question
                 System.out.println(response.getImage() + "\n" + response.getTask());
-                op.writeDelimitedTo(out);
-                //read in
-                response = Response.parseDelimitedFrom(in);
+                
+                while(response.getResponseType() != ResponseType.WON) {
+                
+               //QUESTION PHASE
+                //write out
+              //asks the question
+
                 strToSend = stdin.readLine();
+                //----------------------------------------------------------------------------------
                 //if the want to disconnect
                 if(strToSend.equals("exit")) {
                     op = Request.newBuilder().setOperationType(Request.OperationType.QUIT).build();
@@ -106,35 +115,41 @@ class SockBaseClient {
                     quit = true;
                     break;
                 }
+                
+                else if(strToSend.length() != 2) {
+                    System.out.println("Error 1 ---> You must end an input of (E.g. b0, a letter followed by a numeric value, no spaces)");
+                }
                 else if(!Character.isDigit(strToSend.charAt(1))) {
                     System.out.println("Error-1 ---> You did not input a valid digit!");
-                }else if(strToSend.length() != 2) {
-                    System.out.println("Error 1 ---> You must end an input of (E.g. b0, a letter followed by a numeric value, no spaces)");
                 }else {
+                    //section to handle board inputs
                     strToSend = strToSend.toUpperCase();
                     char row = strToSend.charAt(0);
                     int col = Character.getNumericValue(strToSend.charAt(1));
                     op = Request.newBuilder().setOperationType(Request.OperationType.ROWCOL).setRow(row - 'A').setColumn(col).build();
+                    
                     op.writeDelimitedTo(out); 
+                    response = Response.parseDelimitedFrom(in);
+                    System.out.println(response.getImage() + "\n" + response.getTask());
                 }
-                response = Response.parseDelimitedFrom(in);
+//                System.out.println("one cycle");
+                
+                
+                
 //--------------------------------------------------------------------------
                 //ERROR HANDLING SECTION
-                // NEW - LET TOMMY KNOW
                 if(response.getResponseType() == ResponseType.ERROR) {
                     if(response.getTask().equals("0")) {
                         System.out.println(response.getMessage());
-                    }else {
-                        System.out.println("fart buckets");
                     }
 //--------------------------------------------------------------------------
-                // if passes error handling print score and then update board
+                // if passes error handling update board
                 }else {
                     System.out.println(response.getTask());
                     System.out.println(response.getImage());
                 }
                 
-                
+            }
                 
                 break;
             }

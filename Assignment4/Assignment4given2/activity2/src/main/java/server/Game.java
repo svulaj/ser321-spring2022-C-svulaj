@@ -22,7 +22,7 @@ public class Game {
     private int row; // rows in original and hidden
     private boolean won; // if the game is won or not
     private List<String> files = new ArrayList<String>(); // list of files, each file has one image
-
+    
 
     public Game(){
         // you can of course add more or change this setup completely. You are totally free to also use just Strings in your Server class instead of this class
@@ -127,6 +127,9 @@ public class Game {
         if (original[row][column] == 'x') {
             hidden[row][column] = 'X';
             idx++;
+            if(idx == 12) {
+                setWon();
+            }
         }
 
         return(getImage());

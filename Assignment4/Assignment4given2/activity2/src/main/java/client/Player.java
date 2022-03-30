@@ -14,6 +14,7 @@ public class Player implements Comparable<Player> {
 
     private int wins;
     private String name;
+    private int logins;
 
     // constructor, getters, setters
     public Player(String name, int wins){
@@ -21,6 +22,9 @@ public class Player implements Comparable<Player> {
       this.name = name;
     }
 
+    public void setWins(int win) {
+        this.wins = win;
+    }
     public int getWins(){
       return wins;
     }
@@ -35,4 +39,12 @@ public class Player implements Comparable<Player> {
        public String toString() {
             return ("\n" +this.wins + ": " + this.name);
        }
+
+    public int getLogins() {
+        return logins;
+    }
+
+    public void setLogins(int logins) {
+        this.logins = logins;
+    }
 }
