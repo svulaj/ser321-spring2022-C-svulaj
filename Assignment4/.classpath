@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="Assignment4given2/activity1/src/main/java"/>
+	<classpathentry kind="src" path="Assignment4given2/activity2/build/generated/source/proto/main/java"/>
+	<classpathentry kind="src" path="Assignment4given2/activity2/src/main/java"/>
+	<classpathentry kind="lib" path="Assignment4given2/activity2/build/libs/activity2.jar"/>
+	<classpathentry kind="output" path="Assignment4given2/activity1/build/classes/java/main"/>
+</classpath>
