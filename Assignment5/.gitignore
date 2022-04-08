@@ -1,0 +1,25 @@
+bin/
+tmp/
+
+
+# Log file
+*.log
+
+# Compiled class file
+*.class
+
+### Eclipse Patch ###
+# Eclipse Core	
+.project
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+
+### Gradle ###
+.gradle
+/build/
