@@ -1,6 +1,14 @@
+import netscape.javascript.JSObject;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.LinkedList;
+import org.json.*;
+import java.io.PrintWriter;
+
+
 
 /**
  * This is the main class for the peer2peer program.
@@ -11,10 +19,28 @@ import java.net.Socket;
  * 
  */
 
+/**
+ * type: start
+ * Response:
+ * OK
+ *  type: hello
+ *  image: <String> encoded image
+ *  value: <String> asking for name of player
+ * Error
+ * 	type: error
+ *  message: <String> Error message
+ **/
+
 public class Peer {
+	private static Peer peer;
+	private static boolean twoArgs = false;
+	private static int port;
+	private static int port2Listen;
 	private String username;
 	private BufferedReader bufferedReader;
 	private ServerThread serverThread;
+	public static LinkedList<Integer> ports = new LinkedList<>();
+
 	
 	public Peer(BufferedReader bufReader, String username, ServerThread serverThread){
 		this.username = username;
@@ -29,15 +55,33 @@ public class Peer {
 	 */
 	public static void main (String[] args) throws Exception {
 
+		//port2Listen = 0;
+		port = Integer.parseInt(args[1]);
+
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 		String username = args[0];
-		System.out.println("Hello " + username + " and welcome! Your port will be " + args[1]);
 
-		// starting the Server Thread, which waits for other peers to want to connect
 		ServerThread serverThread = new ServerThread(args[1]);
 		serverThread.start();
-		Peer peer = new Peer(bufferedReader, args[0], serverThread);
-		peer.updateListenToPeers();
+		peer = new Peer(bufferedReader, args[0], serverThread);
+
+		if(args.length == 2){
+			peer.askForInput();
+		}
+
+		if(args.length >= 3){
+			twoArgs = true;
+			try{
+				System.out.println("args is >= 2");
+				port2Listen = Integer.parseInt(args[2]);
+				ports.add(port2Listen);
+				peer.updateListenToPeers(port);
+			}catch(IndexOutOfBoundsException e){
+				//e.printStackTrace();
+			}
+		}
+		System.out.println("Hello " + username + " and welcome! Your port will be " + port);
+
 	}
 	
 	/**
@@ -45,16 +89,26 @@ public class Peer {
 	 * Per default we listen to no one
 	 *
 	 */
-	public void updateListenToPeers() throws Exception {
-		System.out.println("> Who do you want to listen to? Enter host:port");
-		String input = bufferedReader.readLine();
-		String[] setupValue = input.split(" ");
-		for (int i = 0; i < setupValue.length; i++) {
-			String[] address = setupValue[i].split(":");
-			Socket socket = null;
+	public void updateListenToPeers(int incomingPort) throws Exception {
+		Socket socket = null;
+
+		//serverThread.retrieveList(ports);
+
 			try {
-				socket = new Socket(address[0], Integer.valueOf(address[1]));
+				// makes so we recieve messages from the OG
+				socket = new Socket("localhost", port2Listen);
+
+
+				JSONObject json = new JSONObject();
+				json.put("type","ONE");
+				json.put("data",port);
+
+				PrintWriter sout = new PrintWriter(socket.getOutputStream(), true);
+				sout.println(json.toString());
+
 				new ClientThread(socket).start();
+
+
 			} catch (Exception c) {
 				if (socket != null) {
 					socket.close();
@@ -64,7 +118,6 @@ public class Peer {
 					System.exit(0);
 				}
 			}
-		}
 
 		askForInput();
 	}
@@ -94,5 +147,29 @@ public class Peer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean checkNewPorts(LinkedList<Integer> list) throws IOException {
+		Socket socket;
+		for (Integer s : list) {
+			if (!ports.contains(s)) {
+				ports.add(s);
+				System.out.println("flaka");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void retrieve(LinkedList<Integer> list) throws IOException {
+		Socket socket;
+		for (Integer s : ports) {
+			list.add(s);
+		}
+
+	}
+
+	public LinkedList<Integer> getList(){
+		return ports;
 	}
 }
