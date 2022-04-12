@@ -51,7 +51,7 @@ public class ServerThread extends Thread{
 				JSONObject json = new JSONObject(bufferedReader.readLine());
 
 				if(json.getString("type").equals("ONE")){
-					allPorts = json.getString("data") + " ";
+					allPorts = json.getInt("data") + " ";
 					System.out.println(allPorts);
 					newPorts.add(json.getInt("data"));
 					System.out.println(json.toString());
