@@ -9,3 +9,7 @@ Arguments are name and port. Start 2 to many peers each having a unique port num
 2nd console: gradle runPeer --args "B 7001 7000" --console=plain -q
 3rd console: gradle runPeer --args "C 7002 7000" --console=plain -q
 
+
+## ScreenCast:
+https://youtu.be/1jvuxcmpDds 
+
