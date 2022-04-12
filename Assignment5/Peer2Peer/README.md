@@ -1,25 +1,11 @@
-#### Purpose:
-Very basic peer-2-peer for a chat. All peers can communicate with each other. 
-
-Each peer is client and server at the same time. 
-When started the peer has a serverthread in which the peer listens for potential other peers to connect.
-
-The peer can choose to listen to other peers by setting the host:port for the peers they want to be able to send messages to them. For every one of these peers that this peer wants to listen to a thread is created and a connection established to the server (which is another peer).
-
-Then chatting can start if everyone did this. 
-
-Client Thread constantly listens.
-
-ServerThread writes every registered listener (the other peers). 
+### Description:
+I was not able to fully complete this activity. The best i could get was being able to create multiple peers who can talk to a few of the peers but not all. Will be demonstrated in screencast. Peers can connect to one other peer or maybe multiple peers can talk to one peer but there is an issue trying to get them all to be able to talk to one another.
 
 ### How to run it
 
 Arguments are name and port. Start 2 to many peers each having a unique port number. 
 
-gradle runPeer --args "Name 7000" --console=plain -q
+1st console: gradle runPeer --args "A 7000" --console=plain -q
+2nd console: gradle runPeer --args "B 7001 7000" --console=plain -q
+3rd console: gradle runPeer --args "C 7002 7000" --console=plain -q
 
-When asked who "> Who do you want to listen to? Enter host:port"
-enter in one line all the host:port combination you want to listen to, e.g.
-localhost:8000 localhost:8001
-
-You will then be listening to these two peers only. You cannot change who you listen to, you would need to start again. If you enter wrong info the program quits. I know userfriendly, feel free to change that if you like :-)

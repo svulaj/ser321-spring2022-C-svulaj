@@ -41,9 +41,7 @@ public class ServerThread extends Thread{
 		try {
 			while (true) {
 				Socket sock = serverSocket.accept();
-				System.out.println("howdy dowdy ----> accepted");
 				listeningSockets.add(sock);
-				System.out.println("Listening triggered ---->" + listeningSockets.size());
 
 
 
@@ -72,7 +70,6 @@ public class ServerThread extends Thread{
 				else if(json.getString("type").equals("TWO")){
 
 					listToString(newPorts);
-					System.out.println("woooooowww");
 
 				}
 				else if(json.getString("type").equals("THREE")){
@@ -101,7 +98,6 @@ public class ServerThread extends Thread{
 			System.out.println( "========" +  listeningSockets.size() + message);
 			for (Socket s : listeningSockets) {
 				PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-				System.out.println("flaka flame");
 				out.println(message);
 		     }
 		} catch(Exception e) {

@@ -154,7 +154,6 @@ public class Peer {
 		for (Integer s : list) {
 			if (!ports.contains(s)) {
 				ports.add(s);
-				System.out.println("flaka");
 				return true;
 			}
 		}
