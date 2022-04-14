@@ -1,10 +1,5 @@
-// plugins {
-//     id "com.github.spotbugs" version "4.5.1"
-//     id "checkstyle"
-// }
-
 apply plugin: 'application'
-// apply plugin: 'jacoco'
+
 
 
 mainClassName = 'main.java.Main'
@@ -19,48 +14,52 @@ repositories {
 dependencies {
     compile "junit:junit:4.12"
     compile files('cls/')
+    compile group: 'org.json', name: 'json', version: '20200518'
 }
 
 
-// test {
-//     exclude 'GivenBlackBox.class'
-// }
+task runNode(type: JavaExec) {
+  description 'Runs a node'
+  
+  classpath = sourceSets.main.runtimeClasspath
 
+  main = 'main.java.Node'
+  standardInput = System.in
 
-///////////////////////////////////////////////////////////////////////
-// Configure Checkstyle
-/////////////////////////////////////////////////////////////////////
-// apply plugin: 'checkstyle'
-// checkstyle {
-//   // Keep checkstyle a little quieter
-//   ignoreFailures = true
-//   showViolations = false
-// }
+  args 'localhost' // host
+  args '8080' // port
+  
+  // run with arguments e.g.: gradle runThreadPoolServer -Pport=9099 -q --console=plain
+  // NEW: can now run like ---> gradle runTask3 -Pport=8888 -q --console=plain
+  if (project.hasProperty('money')) {
+    args(project.getProperty('money'));
+  }
 
-// tasks.withType(Checkstyle) {
-//   reports {
-//     html.enabled = true
-//     xml.enabled = false
-//   }
-// }
-// checkstyle {
-//     toolVersion = "8.8"
-// }
+}
 
+task runClient(type: JavaExec) {
+  description 'Runs a Client'
+  
+  classpath = sourceSets.main.runtimeClasspath
 
-///////////////////////////////////////////////////////////////////////
-// Configure SpotBugs
-///////////////////////////////////////////////////////////////////////
-// To generate an HTML report instead of XML
-// spotbugsMain {
-//     reports {
-//         xml.enabled = false
-//         html.enabled = true
-//     }
-// }
-// spotbugs {
-//     toolVersion = '4.0.0-beta4'
-//     ignoreFailures = true
-//     showProgress = true
-//     effort = 'max'
-// }
+  main = 'main.java.Client'
+  standardInput = System.in
+
+  args 'localhost' // host
+  args '8080' // port
+  
+
+}
+
+task runLeader(type: JavaExec) {
+  description 'Runs a Leader'
+  
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'main.java.Leader'
+  standardInput = System.in
+  
+  args 'localhost' // host
+  args '8080' // port
+
+}

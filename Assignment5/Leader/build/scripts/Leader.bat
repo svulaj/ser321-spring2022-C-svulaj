@@ -67,7 +67,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\Leader.jar;%APP_HOME%\lib\cls;%APP_HOME%\lib\junit-4.12.jar;%APP_HOME%\lib\hamcrest-core-1.3.jar
+set CLASSPATH=%APP_HOME%\lib\Leader.jar;%APP_HOME%\lib\cls;%APP_HOME%\lib\junit-4.12.jar;%APP_HOME%\lib\json-20200518.jar;%APP_HOME%\lib\hamcrest-core-1.3.jar
 
 
 @rem Execute Leader
