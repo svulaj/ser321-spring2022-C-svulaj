@@ -19,6 +19,7 @@ public class Leader {
     private static Socket clientSocket;
     private static Socket clientSocket2;
     private static PrintWriter sout;
+    private static int creditOnTab;
     
 public static void main(String[] args){
     
@@ -194,7 +195,24 @@ public static void main(String[] args){
                                 json.put("type", "yes");
                                 json.put("data", "yes");
                                 sendToNodes(json);
-                            }else if(node1Confirmation.equals("no") && node2Confirmation.equals("no")) {
+                                
+                                json = new JSONObject(bufferedReaderNode1.readLine());
+                                String r1 = json.getString("data");
+                                json = new JSONObject(bufferedReaderNode2.readLine());
+                                String r2 = json.getString("data");
+                                System.out.println("Answers from the nodes after confirmation stuff: " + r1 + " and " + r2);
+                                
+                                //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
+                                json = new JSONObject();
+                                json.put("type", "choice");
+                                json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + dollarAmount+ " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                sout = new PrintWriter(clientSocket.getOutputStream(), true);
+                                sout.println(json.toString());
+                                
+                                
+                            }else if(node1Confirmation.equals("no") && node2Confirmation.equals("no") || 
+                                    node1Confirmation.equals("yes") && node2Confirmation.equals("no") ||
+                                    node1Confirmation.equals("no") && node2Confirmation.equals("yes")){
                                 System.out.println("Leader is replying to node data flags");
                                 System.out.println("Sending ---> no");
                                 json = new JSONObject();
@@ -204,22 +222,77 @@ public static void main(String[] args){
                                 
                                 
                                 json = new JSONObject(bufferedReaderNode1.readLine());
-                                json = new JSONObject(bufferedReaderNode2.readLine());
                                 node1Confirmation = json.getString("data");
+                                json = new JSONObject(bufferedReaderNode2.readLine());
                                 node2Confirmation = json.getString("data");
+                                
+                                
+                                
                                 
                                 //THIS IS WHERE NOTHING HAPPENS IF THE CONSENSES IS "MONEY NOT AVAILABLE"
                                 if(node1Confirmation.equals("cancelled") && node2Confirmation.equals("cancelled")) {
                                     System.out.println("Node1 said: " + node1Confirmation + " and node2 said: " + node2Confirmation);
+                                  //ask client for choice
+                                    json = new JSONObject();
+                                    json.put("type", "choice");
+                                    json.put("data", "Credit=DECLINED.<<<<-----\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                    sout = new PrintWriter(clientSocket.getOutputStream(), true);
+                                    sout.println(json.toString());
                                 }
                                 
+                             
                             }
                             
                             
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //pay-back section              
                         }else if(string.equals("pay-back")) {
-                            
+                              //ASKS HOW MUCH CREDIT THE CLIENT IS ASKING FOR
+                              //sending choice to nodes
+                              json = new JSONObject();
+                              json.put("type", "paychoice");
+                              json.put("data", "How much would you like to pay-back?");
+                              sout = new PrintWriter(clientSocket.getOutputStream(), true);
+                              sout.println(json.toString());
+                              
+                              //WAITS FOR RESPONSE(THE DOLLAR AMOUNT)
+                              bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                              json = new JSONObject(bufferedReader.readLine());
+                              
+                              //displays pay-back amount
+                              string = json.getString("data");
+                              System.out.println("pay-back amount recieved from client: " + string);
+                              //sends value to nodes
+                              json = new JSONObject();
+                              json.put("type", "wantpay");
+                              json.put("data", string);
+                              sendToNodes(json);
+                              
+                              json = new JSONObject(bufferedReaderNode1.readLine());
+                              String n1 = json.getString("data");
+                              json = new JSONObject(bufferedReaderNode2.readLine());
+                              String n2 = json.getString("data");
+                              
+                              if(n1.equals("nothing") || n2.equals("nothing")) {
+                                //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
+                                  json = new JSONObject();
+                                  json.put("type", "choice");
+                                  json.put("data", "NO CREDIT TO PAY.<<<<-----\nyou now have " + creditOnTab + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                  sout = new PrintWriter(clientSocket.getOutputStream(), true);
+                                  sout.println(json.toString());
+                              }else {
+                                  creditOnTab = Integer.parseInt(n1) + Integer.parseInt(n2);
+                                  
+                                  //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
+                                  json = new JSONObject();
+                                  json.put("type", "choice");
+                                  json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + creditOnTab+ " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                  sout = new PrintWriter(clientSocket.getOutputStream(), true);
+                                  sout.println(json.toString());
+                              }
+                              
+                              
+                              
                         }
                        
                         

@@ -115,24 +115,24 @@ public class Client {
                 sout.println(json.toString());
                 
             }
-//            
-//            else if(json.getString("type").equals("paybackchoice")) {
-//                //display what Leader sent
-//                string = json.getString("data");
-//                System.out.println(string);
-//                //collect response and send back to the leader
-//                string = " ";
-//                bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//                string = bufferedReader.readLine();
-//                //packaging up the input into a json
-//                json = new JSONObject();
-//                json.put("type", "pay-back");
-//                json.put("data", string);
-//                //writes the json back out to the Leader
-//                sout = new PrintWriter(socket.getOutputStream(), true);
-//                sout.println(json.toString());
-//                
-//            }
+            //HOW MUCH THEY WANT TO PAYBACK
+            else if(json.getString("type").equals("paychoice")) {
+                //display what Leader sent
+                string = json.getString("data");
+                System.out.println(string);
+                //collect response and send back to the leader
+                string = " ";
+                bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+                string = bufferedReader.readLine();
+                //packaging up the input into a json
+                json = new JSONObject();
+                json.put("type", "payment");
+                json.put("data", string);
+                //writes the json back out to the Leader
+                sout = new PrintWriter(socket.getOutputStream(), true);
+                sout.println(json.toString());
+                
+            }
             
            
             }
