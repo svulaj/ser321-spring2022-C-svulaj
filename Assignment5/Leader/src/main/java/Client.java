@@ -52,18 +52,12 @@ public class Client {
             
 /////////////////////////////////////////////////////////////////////////////////////////////////
             // automated response confirming this client is in fact a client
-            else if(json.getString("type").equals("confirm")) {
-              //packaging up the input into a json
-                json = new JSONObject();
-                json.put("type", "confimation");
-                json.put("data", "yes");
-                //writes the json back out to the Leader
-                sout = new PrintWriter(socket.getOutputStream(), true);
-                sout.println(json.toString());
-                
-            }
+            
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++           
-//BELOW THIS LINE IS FUNCTIONALITY          
+//BELOW THIS LINE IS FUNCTIONALITY      
+            
+            
+            //this on collects client ID
             else if(json.getString("type").equals("id")) {
                 string = json.getString("data");
                 System.out.println(string);
@@ -101,6 +95,9 @@ public class Client {
                 sout.println(json.toString());
                 
             }
+            
+            
+            
             else if(json.getString("type").equals("creditchoice")) {
                 //display what Leader sent
                 string = json.getString("data");
@@ -118,24 +115,24 @@ public class Client {
                 sout.println(json.toString());
                 
             }
-            
-            else if(json.getString("type").equals("paybackchoice")) {
-                //display what Leader sent
-                string = json.getString("data");
-                System.out.println(string);
-                //collect response and send back to the leader
-                string = " ";
-                bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-                string = bufferedReader.readLine();
-                //packaging up the input into a json
-                json = new JSONObject();
-                json.put("type", "pay-back");
-                json.put("data", string);
-                //writes the json back out to the Leader
-                sout = new PrintWriter(socket.getOutputStream(), true);
-                sout.println(json.toString());
-                
-            }
+//            
+//            else if(json.getString("type").equals("paybackchoice")) {
+//                //display what Leader sent
+//                string = json.getString("data");
+//                System.out.println(string);
+//                //collect response and send back to the leader
+//                string = " ";
+//                bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+//                string = bufferedReader.readLine();
+//                //packaging up the input into a json
+//                json = new JSONObject();
+//                json.put("type", "pay-back");
+//                json.put("data", string);
+//                //writes the json back out to the Leader
+//                sout = new PrintWriter(socket.getOutputStream(), true);
+//                sout.println(json.toString());
+//                
+//            }
             
            
             }

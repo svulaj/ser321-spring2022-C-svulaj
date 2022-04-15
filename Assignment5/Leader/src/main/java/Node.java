@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.Scanner;
 import org.json.*;
 
@@ -16,6 +17,8 @@ public class Node {
     private static int money;
     private static int port;
     private static String host;
+    private static LinkedList<Creditor> creditors = new LinkedList<Creditor>();
+    private static String nameString;
 
     public static void main(String[] args){
         
@@ -58,14 +61,81 @@ public class Node {
                 bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 json = new JSONObject(bufferedReader.readLine());
                 
-                if(json.getString("type").equals("wantcredit")) {
+                
+                
+                if(json.getString("type").equals("clientID")) {
+                    //retrieves
+                    string = json.getString("data");
+                    System.out.println("Client: " + string + " has been identified");
+                    //saves name globally since this is the main creditor that we are talking about
+                    nameString = string;
+                    //stores
+                    Creditor newCreditor = new Creditor(string);
+                    creditors.add(newCreditor);//<<<<<<<<<<<<<<<<----------------------very important creditor
+                    System.out.println(newCreditor.getIdString() + " Has been added to the list of creditors");
+                    //---------------------------------
+                    // sending back continuation
+                    json = new JSONObject();
+                    json.put("type", "idAccepted");
+                    json.put("data", "client id accepted by node");
+                    sout = new PrintWriter(socket.getOutputStream(), true);
+                    sout.println(json.toString());
+                    //System.out.println("sent out");
+                
+                }
+                else if(json.getString("type").equals("wantcredit")) {
                     string = json.getString("data");
                     int valueWanted = Integer.parseInt(string);
-                    
+                    valueWanted = (valueWanted/2);
                     System.out.println("Value received for credit request: " + valueWanted);
+                    System.out.println("Sending response......");
+                    if(valueWanted <= money) {
+                        
+//                        submitCreditRequest(valueWanted,nameString);
+//                        System.out.println("method has executed");
+                        
+                        // sending back continuation
+                        json = new JSONObject();
+                        json.put("type", "yes");
+                        json.put("data", "yes");
+                        sout = new PrintWriter(socket.getOutputStream(), true);
+                        sout.println(json.toString());
+                    }else if(valueWanted > money) {
+                        // sending back continuation
+                        json = new JSONObject();
+                        json.put("type", "no");
+                        json.put("data", "no");
+                        sout = new PrintWriter(socket.getOutputStream(), true);
+                        sout.println(json.toString());
+                    }
+                    //waitng for leader to confirm credit should be applied
+                    json = new JSONObject(bufferedReader.readLine());
+                    string = json.getString("data");
+                    System.out.println("Leader has said: " + string);
+                    
+                    if(string.equals("yes")){
+                        submitCreditRequest(valueWanted,nameString);
+                    }else if(string.equals("no")) {
+                        json = new JSONObject();
+                        json.put("type", "cancelled");
+                        json.put("data", "cancelled");
+                        sout = new PrintWriter(socket.getOutputStream(), true);
+                        sout.println(json.toString());
+                    }
                     
                 }
-            }
+//                
+//                else if(json.getString("type").equals("wantcredit")) {
+//                    string = json.getString("data");
+//                    int valueWanted = Integer.parseInt(string);
+//                    System.out.println("Value received for credit request: " + valueWanted);
+//                    
+//                }
+                
+                
+                System.out.println("looping");
+                
+        }//while loop
             
             
             
@@ -87,5 +157,27 @@ public class Node {
 
     public static void setMoney(int money) {
         Node.money = money;
+    }
+    
+    /**
+     * Description: This method is used to credit a creditor.
+     * @param amountToCredit || This param takes in the total amount requested but then halves it for the nodes
+     * @param name || This param is used to ID the creditor we are talking aboutd
+     */
+    public static void submitCreditRequest(int amountToCredit,String name) {
+        int temp;
+        money = (money - amountToCredit);
+        
+        for(Creditor s : creditors) {
+            if(s.getIdString().equals(name)) {
+                
+                temp = s.getCreditAmount();
+                temp += amountToCredit;
+                s.setCreditAmount(temp);
+                System.out.println(temp + " has been credited to " + s.getIdString() + " the running credit amount for this creditor = " + s.getCreditAmount());
+            }
+        }
+        
+        System.out.println("Total amount of money this node has left is: " + money);
     }
 }
