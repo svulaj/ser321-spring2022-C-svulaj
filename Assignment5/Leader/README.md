@@ -20,7 +20,7 @@ Also, my system is not persistent i was working on it as you can see by my use o
 
 ## A
 
-
+https://youtu.be/2UoH2Pa3GtY 
 
 ## B
 requirements:
