@@ -1,8 +1,8 @@
-Leader.java
- main.java.Leader
+Node.java
+ main.java.Node
 Creditor.java
  main.java.Creditor
 Client.java
  main.java.Client
-Node.java
- main.java.Node
+Leader.java
+ main.java.Leader

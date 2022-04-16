@@ -20,6 +20,8 @@ public class Leader {
     private static Socket clientSocket2;
     private static PrintWriter sout;
     private static int creditOnTab;
+    private static String r1;
+    private static int tracker;
     
 public static void main(String[] args){
     
@@ -197,20 +199,22 @@ public static void main(String[] args){
                                 sendToNodes(json);
                                 
                                 json = new JSONObject(bufferedReaderNode1.readLine());
-                                String r1 = json.getString("data");
+                                r1 = json.getString("data");
                                 json = new JSONObject(bufferedReaderNode2.readLine());
                                 String r2 = json.getString("data");
                                 System.out.println("Answers from the nodes after confirmation stuff: " + r1 + " and " + r2);
+                                
+                                //creditOnTab = (Integer.parseInt(r1) + Integer.parseInt(r2));
                                 int one = Integer.parseInt(r1);
                                 int two = Integer.parseInt(r2);
                                 int three = one + two;
                                 String senderString = Integer.toString(three);
-                                creditOnTab = three;
                                 
+                                creditOnTab = one;
                                 //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
                                 json = new JSONObject();
                                 json.put("type", "choice");
-                                json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + senderString + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + one + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
                                 sout = new PrintWriter(clientSocket.getOutputStream(), true);
                                 sout.println(json.toString());
                                 
@@ -267,6 +271,7 @@ public static void main(String[] args){
                               //displays pay-back amount
                               string = json.getString("data");
                               System.out.println("pay-back amount recieved from client: " + string);
+                              tracker = Integer.parseInt(string);
                               //sends value to nodes
                               json = new JSONObject();
                               json.put("type", "wantpay");
@@ -299,11 +304,12 @@ public static void main(String[] args){
                                  
                                   int temp = Integer.parseInt(n1) + Integer.parseInt(n2);
                                   System.out.println("temp --->>>>>>" + temp);
-                                  creditOnTab = creditOnTab - n5;
-//                                  creditOnTab = creditOnTab;
+                          
+                                  creditOnTab = creditOnTab - tracker;
+                                  System.out.println("credit tab ==== " + creditOnTab);
                                   json = new JSONObject();
                                   json.put("type", "choice");
-                                  json.put("data", "Payment SUCCESS.<<<<-----\nyou now have " + creditOnTab + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                  json.put("data", "Payment SUCCESS.<<<<-----\nyou now have " + creditOnTab  + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
                                   sout = new PrintWriter(clientSocket.getOutputStream(), true);
                                   sout.println(json.toString());
                                   

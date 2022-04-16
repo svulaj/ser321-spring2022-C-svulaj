@@ -95,7 +95,7 @@ public class Node {
                 else if(json.getString("type").equals("wantcredit")) {
                     string = json.getString("data");
                     int valueWanted = Integer.parseInt(string);
-                    valueWanted = (valueWanted/2);
+                    valueWanted = (valueWanted);
                     System.out.println("Value received for credit request: " + valueWanted);
                     System.out.println("Sending response......");
        //===============================================================
@@ -166,7 +166,7 @@ public class Node {
                     if(quickMsgString.equals("n")) {
                         json = new JSONObject();
                         json.put("type", "error");
-                        json.put("data", "no money");
+                        json.put("data", "nothing");
                         sout = new PrintWriter(socket.getOutputStream(), true);
                         sout.println(json.toString());
                     }else {
@@ -265,7 +265,7 @@ public class Node {
                     quickMsgString = "y";
                     checker = s.getCreditAmount();
                     money += checker;
-                    System.out.println("Total amount of money this node has left is: " + money);
+                    
                 }
                 //if they dont have credit to pay-back
                 if(s.getCreditAmount() == 0) {

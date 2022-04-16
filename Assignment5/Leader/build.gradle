@@ -18,7 +18,7 @@ dependencies {
 }
 
 
-task runNode1(type: JavaExec) {
+task runNode(type: JavaExec) {
   description 'Runs a node'
   
   classpath = sourceSets.main.runtimeClasspath
@@ -37,24 +37,7 @@ task runNode1(type: JavaExec) {
 
 }
 
-task runNode2(type: JavaExec) {
-  description 'Runs a node'
-  
-  classpath = sourceSets.main.runtimeClasspath
 
-  main = 'main.java.Node'
-  standardInput = System.in
-
-  args 'localhost' // host
-  args '8080' // port
-  
-  // run with arguments e.g.: gradle runThreadPoolServer -Pport=9099 -q --console=plain
-  // NEW: can now run like ---> gradle runTask3 -Pport=8888 -q --console=plain
-  if (project.hasProperty('money')) {
-    args(project.getProperty('money'));
-  }
-
-}
 
 task runClient(type: JavaExec) {
   description 'Runs a Client'
