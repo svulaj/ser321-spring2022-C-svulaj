@@ -19,11 +19,12 @@ public class Node {
     private static int creditValue;
     private static String host;
     private static LinkedList<Creditor> creditors = new LinkedList<Creditor>();
-    private static String nameString;
+    private static String nameString; // temp holder of a clients name
     private static PrintWriter sout;
     private static Socket socket;
-    private static String quickMsgString;
-    
+    private static String quickMsgString; // simple string to indicate flow direction after payments
+    private static int tab; // is the credit taken out by a client
+    private static int checker;
 
     public static void main(String[] args){
         
@@ -61,10 +62,13 @@ public class Node {
             
             
             System.out.println("Money on system is: " + money);
-            
+            try {
             while(true) {
-                bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                json = new JSONObject(bufferedReader.readLine());
+                
+                    bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    json = new JSONObject(bufferedReader.readLine());
+                
+                
                 
                 
                 
@@ -94,7 +98,9 @@ public class Node {
                     valueWanted = (valueWanted/2);
                     System.out.println("Value received for credit request: " + valueWanted);
                     System.out.println("Sending response......");
-                    if(valueWanted <= money) {
+       //===============================================================
+                    //for checking if this node has enough money
+                    if(money >= (valueWanted * (1.5))) {
                         
 //                        submitCreditRequest(valueWanted,nameString);
 //                        System.out.println("method has executed");
@@ -105,7 +111,7 @@ public class Node {
                         json.put("data", "yes");
                         sout = new PrintWriter(socket.getOutputStream(), true);
                         sout.println(json.toString());
-                    }else if(valueWanted > money) {
+                    }else{
                         // sending back continuation
                         json = new JSONObject();
                         json.put("type", "no");
@@ -113,6 +119,8 @@ public class Node {
                         sout = new PrintWriter(socket.getOutputStream(), true);
                         sout.println(json.toString());
                     }
+       //===============================================================
+                    
                     //waitng for leader to confirm credit should be applied
                     json = new JSONObject(bufferedReader.readLine());
                     string = json.getString("data");
@@ -121,12 +129,21 @@ public class Node {
                     if(string.equals("yes")){
                         //submits credit requests
                         submitCreditRequest(valueWanted,nameString);
+                        
+                        if(creditValue < 0) {
+                            creditValue = 0;
+                            json = new JSONObject();
+                            json.put("type", "error");
+                            json.put("data", Integer.toString(valueWanted));
+                            sout = new PrintWriter(socket.getOutputStream(), true);
+                            sout.println(json.toString());
+                        }
                         //starts loop again
                         json = new JSONObject();
                         json.put("type", "idAccepted");
-                        json.put("data", "loop cont.");
+                        json.put("data", Integer.toString(tab));
                         sout = new PrintWriter(socket.getOutputStream(), true);
-                        sout.println(json.toString());//<<<---
+                        sout.println(json.toString());
                         
                     }else if(string.equals("no")) {
                         json = new JSONObject();
@@ -138,6 +155,7 @@ public class Node {
                     
                 }
                 
+                
                 else if(json.getString("type").equals("wantpay")) {
                     string = json.getString("data");
                     int payBackValue = Integer.parseInt(string)/2;
@@ -145,16 +163,16 @@ public class Node {
                     
                     payRequest(payBackValue,nameString);
                     
-                    if(quickMsgString.equals("you do not have any credit to pay back")) {
+                    if(quickMsgString.equals("n")) {
                         json = new JSONObject();
-                        json.put("type", "nocredit");
+                        json.put("type", "error");
                         json.put("data", "nothing");
                         sout = new PrintWriter(socket.getOutputStream(), true);
                         sout.println(json.toString());
                     }else {
                         json = new JSONObject();
-                        json.put("type", "cancelled");
-                        json.put("data", Integer.toString(creditValue));
+                        json.put("type", "payment");
+                        json.put("data", Integer.toString(checker));
                         sout = new PrintWriter(socket.getOutputStream(), true);
                         sout.println(json.toString());
                     }
@@ -169,7 +187,9 @@ public class Node {
                 
         }//while loop
             
-            
+            }catch(Exception e) {
+                System.out.println("closed");
+            } 
             
             
             
@@ -200,15 +220,21 @@ public class Node {
         int temp;
         money = (money - amountToCredit);
         
+        if(money < 0) {
+            money = 0;
+            System.out.println("not enough money left on this node");
+            return;
+        }
+        
         for(Creditor s : creditors) {
             if(s.getIdString().equals(name)) {
-                
-                temp = s.getCreditAmount();
-                temp += amountToCredit;
-                s.setCreditAmount(temp);
-                System.out.println(temp + " has been credited to " + s.getIdString() + " the running credit amount for this creditor = " + s.getCreditAmount());
+                tab = s.getCreditAmount();
+                tab += amountToCredit;
+                s.setCreditAmount(tab);
+                System.out.println((tab) + " has been credited to " + s.getIdString() + " the running credit amount for this creditor = " + (s.getCreditAmount()) );
             }
         }
+        
         System.out.println("Total amount of money this node has left is: " + money);
         
 //        try {
@@ -235,11 +261,15 @@ public class Node {
                     System.out.println("Credit for " + s.getIdString() + " is " + s.getCreditAmount());
                     s.setCreditAmount(s.getCreditAmount()-value);
                     System.out.println("Credit for " + s.getIdString() + " is now " + s.getCreditAmount());
-                    creditValue = s.getCreditAmount();
+                    //creditValue = s.getCreditAmount();
+                    quickMsgString = "y";
+                    checker = s.getCreditAmount();
+                    money += checker;
+                    System.out.println("Total amount of money this node has left is: " + money);
                 }
                 //if they dont have credit to pay-back
-                else if(s.getCreditAmount() == 0) {
-                    quickMsgString = "you do not have any credit to pay back";
+                if(s.getCreditAmount() == 0) {
+                    quickMsgString = "n";
                 }
                 
                 

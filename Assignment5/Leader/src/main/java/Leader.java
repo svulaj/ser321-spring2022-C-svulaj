@@ -201,11 +201,16 @@ public static void main(String[] args){
                                 json = new JSONObject(bufferedReaderNode2.readLine());
                                 String r2 = json.getString("data");
                                 System.out.println("Answers from the nodes after confirmation stuff: " + r1 + " and " + r2);
+                                int one = Integer.parseInt(r1);
+                                int two = Integer.parseInt(r2);
+                                int three = one + two;
+                                String senderString = Integer.toString(three);
+                                creditOnTab = three;
                                 
                                 //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
                                 json = new JSONObject();
                                 json.put("type", "choice");
-                                json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + dollarAmount+ " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + senderString + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
                                 sout = new PrintWriter(clientSocket.getOutputStream(), true);
                                 sout.println(json.toString());
                                 
@@ -268,27 +273,40 @@ public static void main(String[] args){
                               json.put("data", string);
                               sendToNodes(json);
                               
+                              //---------------------------------------------------------
+                              
                               json = new JSONObject(bufferedReaderNode1.readLine());
                               String n1 = json.getString("data");
                               json = new JSONObject(bufferedReaderNode2.readLine());
                               String n2 = json.getString("data");
                               
-                              if(n1.equals("nothing") || n2.equals("nothing")) {
+                              int n3 = Integer.parseInt(n1);
+                              int n4 = Integer.parseInt(n2);
+                              int n5 = n3 + n4;
+                              
+                              System.out.println("data coming back is: " + n1 + " and "+ n2);
+                              System.out.println("check 1 <<<<<<<<<----------");
+                              //ERROR CASE TO COVER IF THERE IS NO CREDIT TO BE PAID ON BY THE CLIENT.
+                              if(json.getString("type").equals("error")) {
                                 //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
                                   json = new JSONObject();
                                   json.put("type", "choice");
                                   json.put("data", "NO CREDIT TO PAY.<<<<-----\nyou now have " + creditOnTab + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
                                   sout = new PrintWriter(clientSocket.getOutputStream(), true);
                                   sout.println(json.toString());
-                              }else {
-                                  creditOnTab = Integer.parseInt(n1) + Integer.parseInt(n2);
-                                  
-                                  //WHEN ACCEPTED RE-LOOPS FOR OPTIONS
+                                  //CASE WHERE THERE IS CREDIT TO BE PAID ON
+                              }else{
+                                 
+                                  int temp = Integer.parseInt(n1) + Integer.parseInt(n2);
+                                  System.out.println("temp --->>>>>>" + temp);
+                                  creditOnTab = creditOnTab - n5;
+//                                  creditOnTab = creditOnTab;
                                   json = new JSONObject();
                                   json.put("type", "choice");
-                                  json.put("data", "Credit=ACCEPTED.<<<<-----\nyou now have " + creditOnTab+ " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
+                                  json.put("data", "Payment SUCCESS.<<<<-----\nyou now have " + creditOnTab + " in credit" +"\nyour options are: 1) credit or 2) pay-back. please spell as diplayed");
                                   sout = new PrintWriter(clientSocket.getOutputStream(), true);
                                   sout.println(json.toString());
+                                  
                               }
                               
                               

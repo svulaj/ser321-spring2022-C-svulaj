@@ -1,8 +1,8 @@
-Client.java
- main.java.Client
-Creditor.java
- main.java.Creditor
-Node.java
- main.java.Node
 Leader.java
  main.java.Leader
+Creditor.java
+ main.java.Creditor
+Client.java
+ main.java.Client
+Node.java
+ main.java.Node
