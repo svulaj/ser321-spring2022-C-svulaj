@@ -166,7 +166,7 @@ public class Node {
                     if(quickMsgString.equals("n")) {
                         json = new JSONObject();
                         json.put("type", "error");
-                        json.put("data", "nothing");
+                        json.put("data", "no money");
                         sout = new PrintWriter(socket.getOutputStream(), true);
                         sout.println(json.toString());
                     }else {
