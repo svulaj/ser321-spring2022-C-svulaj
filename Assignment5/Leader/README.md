@@ -14,7 +14,9 @@ Notes 2:
 There isnt too much error handling in my system. At least for inputs on the client side(due to running out of time) so in order to request credits or pay-backs in the client you much correctly spell them as such,      credit     pay-back.
 For them to work.
 
+Also, you must run Leader, then node1, then node2, then the client
 
+Also, my system is not persistent i was working on it as you can see by my use of lists and a class of creditors to retain the information recived and given.
 
 ## A
 
