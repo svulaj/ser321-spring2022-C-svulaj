@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.w3c.dom.UserDataHandler;
+
 import com.google.protobuf.Empty;
 
 import io.grpc.stub.StreamObserver;
@@ -20,18 +23,32 @@ public class TimerImpl extends TimerGrpc.TimerImplBase{
         TimerResponse.Builder response = TimerResponse.newBuilder();
         ClockObject newEntry = new ClockObject(req.getName());
         boolean flag = false;
-        ClockObject barf = new ClockObject("shaun");
-        timers.add(barf);
+//        ClockObject barf = new ClockObject("shaun");
+//        barf.start();
+//        timers.add(barf);
         
-        for(ClockObject z : timers) {
-            if(z.getName().equals(req.getName())) {
-                response.setIsSuccess(false);
-                response.setError("Name is already in use");
-                break;
-            }else if(!z.getName().equals(req.getName())){
-                flag = true;
+        
+        
+        if(timers.isEmpty()) {
+            response.setIsSuccess(true);
+            newEntry = new ClockObject(req.getName());
+            newEntry.start();
+            timers.add(newEntry);
+            System.out.println("added entry because list was empty");
+        }else {
+            for(ClockObject z : timers) {
+                
+                if(z.getName().equals(req.getName())) {
+                    response.setIsSuccess(false);
+                    response.setError("Name is already in use");
+                    break;
+                }else if(!z.getName().equals(req.getName())){
+                    flag = true;
+                }
             }
         }
+        
+        
         //here because if we modify in for loop, modifcation exception occurs
         if(flag == true) {
             response.setIsSuccess(true);
@@ -82,20 +99,23 @@ public class TimerImpl extends TimerGrpc.TimerImplBase{
         Time.Builder timeResponse = Time.newBuilder();
         
         LinkedList<ClockObject> temp = new LinkedList<ClockObject>();
-        
+        int count = 0;
         for(ClockObject z : timers) {
             if(z.getName().equals(req.getName())) {
-                
+                z.cancelTimer();
                 response.setTimer(timeResponse);
-                
-                System.out.println("found a user: timer has been canceled");
-            }else {
-                temp.add(z);
+                //timers.remove(z);
+                System.out.println("found a user: timer has been closed");
+                break;
             }
+//            else {
+//                temp.add(z);
+//            }
+            count++;
             
         }
         //sets list of timers to the list that has all of the still running timers
-        timers = temp;
+        //timers = temp;
         
         
         
@@ -137,11 +157,13 @@ public class TimerImpl extends TimerGrpc.TimerImplBase{
         String name;
         Timer timer;
         double secondsPassed = 0;
+        boolean hasStarted = false;
         
         TimerTask task = new TimerTask() {
             
             @Override
             public void run() {
+                hasStarted = true;
                 secondsPassed++;
                 //System.out.println("Seconds passed: " + secondsPassed);
             }
@@ -171,6 +193,13 @@ public class TimerImpl extends TimerGrpc.TimerImplBase{
         
         public Timer getTimer() {
             return this.timer;
+        }
+        
+        public void cancelTimer() {
+            hasStarted = false;
+            this.timer.cancel();
+            this.timer.purge();
+            this.task.cancel();
         }
         
     }

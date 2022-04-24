@@ -10,6 +10,8 @@ import test.TestProtobuf;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+
 import com.google.protobuf.Empty; // needed to use Empty
 
 
@@ -26,6 +28,7 @@ public class EchoClient {
   private final RegistryGrpc.RegistryBlockingStub blockingStub3;
   
   private final TimerGrpc.TimerBlockingStub timerStub;
+  private final RockPaperScissorsGrpc.RockPaperScissorsBlockingStub rpsStub;
   
   /** Construct client for accessing server using the existing channel. */
   public EchoClient(Channel channel, Channel regChannel) {
@@ -39,6 +42,7 @@ public class EchoClient {
     blockingStub2 = JokeGrpc.newBlockingStub(channel);
     blockingStub3 = RegistryGrpc.newBlockingStub(regChannel);
     timerStub = TimerGrpc.newBlockingStub(channel);
+    rpsStub = RockPaperScissorsGrpc.newBlockingStub(channel);
   }
 
   public void askServerToParrot(String message) {
@@ -54,6 +58,7 @@ public class EchoClient {
   }
   
 //============================================================================================
+  //TIMER SECTION
   public void askServerToStartTimer(String message) {
       TimerRequest request = TimerRequest.newBuilder().setName(message).build();
       TimerResponse response;
@@ -90,7 +95,7 @@ public class EchoClient {
       
       
           try {
-            response = timerStub.check(request);
+            response = timerStub.close(request);
           } catch (Exception e) {
             System.err.println("RPC failed: " + e.getMessage());
             return;
@@ -115,7 +120,7 @@ public class EchoClient {
           }
           
           for(Time z : response.getTimersList()) {
-              System.out.println("User eliminated: " + z.getName());
+              System.out.println("User: " + z.getName() + " Time: " + z.getSecondsPassed());
           }
           
 //          System.out.println("Received from server: " + response.getIsSuccess());
@@ -124,7 +129,35 @@ public class EchoClient {
           
   
  //============================================================================================
-
+  //ROCK PAPER SCISSOR SECTION
+  
+  
+  public void askServerToplayeRPS(String name, int move) {
+      PlayReq request = PlayReq.newBuilder().build();
+      PlayRes response;
+      
+      if(move == 0) {
+          request = PlayReq.newBuilder().setName(name).setPlay(PlayReq.Played.ROCK).build();
+      }else if(move == 1) {
+          request = PlayReq.newBuilder().setName(name).setPlay(PlayReq.Played.PAPER).build();
+      }else if(move == 2) {
+          request = PlayReq.newBuilder().setName(name).setPlay(PlayReq.Played.SCISSORS).build();
+      }
+      
+      try {
+          response = rpsStub.play(request);
+        } catch (Exception e) {
+          System.err.println("RPC failed: " + e.getMessage());
+          return;
+        }
+        System.out.println(response.getMessage());
+        System.out.println(response.getError());
+      
+      
+  }
+  
+  
+ //============================================================================================
   public void askForJokes(int num) {
     JokeReq request = JokeReq.newBuilder().setNumber(num).build();
     JokeRes response;
@@ -228,16 +261,16 @@ public class EchoClient {
     try {
         EchoClient client = new EchoClient(channel, regChannel);
         
-        System.out.println("What service would you like to use today?");
+        
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         while(true) {
             System.out.println("What service would you like to use today?"); // NO ERROR handling of wrong input here.
-            System.out.println("Choose you Services: Timer = 1");
+            System.out.println("Choose you Services: Timer = 1 || Rock,Paper,Scissors = 2");
             String choice = reader.readLine();
             
             switch (choice) {
             case "1": {
-                System.out.println("start = a, check = b");
+                System.out.println("start = a, check = b, close = c, list = d");
                 String choice2 = reader.readLine();
                 
                 switch (choice2) {
@@ -270,8 +303,28 @@ public class EchoClient {
                 }
             
             }
+            case "2": {
+                System.out.println("play = a");
+                String choice2 = reader.readLine();
+                
+                switch (choice2) {
+                    case "a": {
+                        System.out.println("whats your name?");
+                        String nameString = reader.readLine();
+                        
+                        System.out.println("Enter: 0 = rock, 1 = paper, 2 = scissor");
+                        String move = reader.readLine();
+                        int played = Integer.parseInt(move);
+                        
+                        client.askServerToplayeRPS(nameString,played);
+                    }
+                }
+            }
             
             }
+            
+            
+            
         }
         
         

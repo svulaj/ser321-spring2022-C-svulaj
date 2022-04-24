@@ -38,6 +38,7 @@ public class Node {
         .addService(new EchoImpl())
         .addService(new JokeImpl())
         .addService(new TimerImpl())
+        .addService(new RockPaperScissorsImpl())
         .addService(new RegistryAnswerImpl(services)).build().start();
 
     for (var service : server.getServices()) {
