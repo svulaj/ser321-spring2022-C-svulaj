@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import com.google.protobuf.Empty; // needed to use Empty
 
+
+
 // just to show how to use the empty in the protobuf protocol
     // Empty empt = Empty.newBuilder().build();
 
@@ -22,7 +24,9 @@ public class EchoClient {
   private final EchoGrpc.EchoBlockingStub blockingStub;
   private final JokeGrpc.JokeBlockingStub blockingStub2;
   private final RegistryGrpc.RegistryBlockingStub blockingStub3;
-
+  
+  private final TimerGrpc.TimerBlockingStub timerStub;
+  
   /** Construct client for accessing server using the existing channel. */
   public EchoClient(Channel channel, Channel regChannel) {
     // 'channel' here is a Channel, not a ManagedChannel, so it is not this code's
@@ -34,13 +38,10 @@ public class EchoClient {
     blockingStub = EchoGrpc.newBlockingStub(channel);
     blockingStub2 = JokeGrpc.newBlockingStub(channel);
     blockingStub3 = RegistryGrpc.newBlockingStub(regChannel);
+    timerStub = TimerGrpc.newBlockingStub(channel);
   }
 
   public void askServerToParrot(String message) {
-
-    
-
-
     ClientRequest request = ClientRequest.newBuilder().setMessage(message).build();
     ServerResponse response;
     try {
@@ -51,6 +52,78 @@ public class EchoClient {
     }
     System.out.println("Received from server: " + response.getMessage());
   }
+  
+//============================================================================================
+  public void askServerToStartTimer(String message) {
+      TimerRequest request = TimerRequest.newBuilder().setName(message).build();
+      TimerResponse response;
+      
+      
+          try {
+            response = timerStub.start(request);
+          } catch (Exception e) {
+            System.err.println("RPC failed: " + e.getMessage());
+            return;
+          }
+          System.out.println("Received from server: " + response.getIsSuccess());
+          System.out.println(response.getError());
+        }
+  
+  public void askServerToCheckTimer(String message) {
+      TimerRequest request = TimerRequest.newBuilder().setName(message).build();
+      TimerResponse response;
+      
+      
+          try {
+            response = timerStub.check(request);
+          } catch (Exception e) {
+            System.err.println("RPC failed: " + e.getMessage());
+            return;
+          }
+          System.out.println("Received from server: " + response.getIsSuccess());
+          System.out.println("Time elapsed: " + response.getTimer().getSecondsPassed());
+        }
+  
+  public void askServerToCloseTimer(String message) {
+      TimerRequest request = TimerRequest.newBuilder().setName(message).build();
+      TimerResponse response;
+      
+      
+          try {
+            response = timerStub.check(request);
+          } catch (Exception e) {
+            System.err.println("RPC failed: " + e.getMessage());
+            return;
+          }
+          System.out.println("Received from server: " + response.getIsSuccess());
+          //System.out.println("User eliminated: " + response.getTimerList());
+        }
+  
+  public void askServerToListTimers() {
+      Empty empt = Empty.newBuilder().build();
+      TimerList response;
+      
+      
+          try {
+            response = timerStub.list(empt);
+            
+            
+            
+          } catch (Exception e) {
+            System.err.println("RPC failed: " + e.getMessage());
+            return;
+          }
+          
+          for(Time z : response.getTimersList()) {
+              System.out.println("User eliminated: " + z.getName());
+          }
+          
+//          System.out.println("Received from server: " + response.getIsSuccess());
+//          System.out.println("List: " + response.getTimer().getName());
+        }
+          
+  
+ //============================================================================================
 
   public void askForJokes(int num) {
     JokeReq request = JokeReq.newBuilder().setNumber(num).build();
@@ -117,7 +190,8 @@ public class EchoClient {
       return;
     }
   }
-
+  
+  
   public static void main(String[] args) throws Exception {
     if (args.length != 6) {
       System.out
@@ -152,7 +226,65 @@ public class EchoClient {
     String regTarget = regHost + ":" + regPort;
     ManagedChannel regChannel = ManagedChannelBuilder.forTarget(regTarget).usePlaintext().build();
     try {
-
+        EchoClient client = new EchoClient(channel, regChannel);
+        
+        System.out.println("What service would you like to use today?");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        while(true) {
+            System.out.println("What service would you like to use today?"); // NO ERROR handling of wrong input here.
+            System.out.println("Choose you Services: Timer = 1");
+            String choice = reader.readLine();
+            
+            switch (choice) {
+            case "1": {
+                System.out.println("start = a, check = b");
+                String choice2 = reader.readLine();
+                
+                switch (choice2) {
+                    case "a": {
+                        
+                        System.out.println("Name of timer to start?");
+                        String name = reader.readLine();
+                        client.askServerToStartTimer(name);
+                        break;
+                    }
+                    case "b": {
+                        
+                        System.out.println("Name of timer to check?");
+                        String name = reader.readLine();
+                        client.askServerToCheckTimer(name);
+                        break;
+                    }
+                    case "c": {
+                        
+                        System.out.println("Name of timer to close?");
+                        String name = reader.readLine();
+                        client.askServerToCloseTimer(name);
+                        break;
+                    }
+                    case "d": {
+                        client.askServerToListTimers();
+                        System.out.println("List returned: ");
+                        break;
+                    }
+                }
+            
+            }
+            
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
       // ##############################################################################
       // ## Assume we know the port here from the service node it is basically set through Gradle
       // here.
@@ -177,49 +309,52 @@ public class EchoClient {
        * crashes or went offline.
        */
 
-      // Just doing some hard coded calls to the service node without using the
-      // registry
-      // create client
-      EchoClient client = new EchoClient(channel, regChannel);
-
-      // call the parrot service on the server
-      client.askServerToParrot(message);
-
-      // ask the user for input how many jokes the user wants
-      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-      // Reading data using readLine
-      System.out.println("How many jokes would you like?"); // NO ERROR handling of wrong input here.
-      String num = reader.readLine();
-
-      // calling the joked service from the server with num from user input
-      client.askForJokes(Integer.valueOf(num));
-
-      // adding a joke to the server
-      client.setJoke("I made a pencil with two erasers. It was pointless.");
-
-      // showing 6 joked
-      client.askForJokes(Integer.valueOf(6));
+//      // Just doing some hard coded calls to the service node without using the
+//      // registry
+//      // create client
+//      EchoClient client = new EchoClient(channel, regChannel);
+//
+//      // call the parrot service on the server
+//      client.askServerToParrot(message);
+//
+//      // ask the user for input how many jokes the user wants
+//      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+//
+//      // Reading data using readLine
+//      System.out.println("How many jokes would you like?"); // NO ERROR handling of wrong input here.
+//      String num = reader.readLine();
+//
+//      // calling the joked service from the server with num from user input
+//      client.askForJokes(Integer.valueOf(num));
+//
+//      // adding a joke to the server
+//      client.setJoke("I made a pencil with two erasers. It was pointless.");
+//
+//      // showing 6 joked
+//      client.askForJokes(Integer.valueOf(6));
+//      
+      
+      
 
       // ############### Contacting the registry just so you see how it can be done
 
-      if (args[5].equals("true")) { 
+      //if (args[5].equals("true")) { 
         // Comment these last Service calls while in Activity 1 Task 1, they are not needed and wil throw issues without the Registry running
         // get thread's services
-        client.getServices(); // get all registered services 
+        //client.getServices(); // get all registered services 
 
         // get parrot
-        client.findServer("services.Echo/parrot"); // get ONE server that provides the parrot service
+        //client.findServer("services.Echo/parrot"); // get ONE server that provides the parrot service
         
         // get all setJoke
-        client.findServers("services.Joke/setJoke"); // get ALL servers that provide the setJoke service
+        //client.findServers("services.Joke/setJoke"); // get ALL servers that provide the setJoke service
 
         // get getJoke
-        client.findServer("services.Joke/getJoke"); // get ALL servers that provide the getJoke service
+        //client.findServer("services.Joke/getJoke"); // get ALL servers that provide the getJoke service
 
         // does not exist
-        client.findServer("random"); // shows the output if the server does not find a given service
-      }
+        //client.findServer("random"); // shows the output if the server does not find a given service
+      //}
 
     } finally {
       // ManagedChannels use resources like threads and TCP connections. To prevent

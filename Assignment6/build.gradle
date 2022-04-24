@@ -68,7 +68,7 @@ sourceSets {
  // Method to Echo in client
  def message = "Hello you" // for the echo service in the node
 
- def regOn = true
+ def regOn = false
 
 // task reading in the arguments if any given, if not the default from above will be used
 task arguments {

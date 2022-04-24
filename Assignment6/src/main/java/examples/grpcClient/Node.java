@@ -37,6 +37,7 @@ public class Node {
     server = ServerBuilder.forPort(port)
         .addService(new EchoImpl())
         .addService(new JokeImpl())
+        .addService(new TimerImpl())
         .addService(new RegistryAnswerImpl(services)).build().start();
 
     for (var service : server.getServices()) {
@@ -108,8 +109,8 @@ public class Node {
     // Comment the next 2 lines for your local client server development (Activity 2 task 1, you need this part again for Task 2)
     if (args[5].equals("true")) { // since I am too lazy to convert it to bool
 
-      Register regThread = new Register(args[0], regPort, args[2], nodePort, args[4]);
-      regThread.start();
+      //Register regThread = new Register(args[0], regPort, args[2], nodePort, args[4]);
+      //regThread.start();
     }
 
     
