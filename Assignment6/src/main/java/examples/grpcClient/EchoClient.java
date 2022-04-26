@@ -123,8 +123,7 @@ public class EchoClient {
               System.out.println("User: " + z.getName() + " Time: " + z.getSecondsPassed());
           }
           
-//          System.out.println("Received from server: " + response.getIsSuccess());
-//          System.out.println("List: " + response.getTimer().getName());
+
         }
           
   
@@ -152,9 +151,29 @@ public class EchoClient {
         }
         System.out.println(response.getMessage());
         System.out.println(response.getError());
-      
-      
   }
+  
+  public void askServerToListLeaders() {
+      Empty empt = Empty.newBuilder().build();
+      LeaderboardRes response;
+      
+      
+          try {
+            response = rpsStub.leaderboard(empt);
+            
+            
+            
+          } catch (Exception e) {
+            System.err.println("RPC failed: " + e.getMessage());
+            return;
+          }
+          
+          for(LeaderboardEntry z : response.getLeaderboardList()) {
+              System.out.println("User: " + z.getName() + " ----->Wins: " + z.getWins() + " ------>Losses: " + z.getLost());
+          }
+          
+
+        }
   
   
  //============================================================================================
@@ -304,7 +323,7 @@ public class EchoClient {
             
             }
             case "2": {
-                System.out.println("play = a");
+                System.out.println("Play = a, Leaderboard = b");
                 String choice2 = reader.readLine();
                 
                 switch (choice2) {
@@ -317,7 +336,14 @@ public class EchoClient {
                         int played = Integer.parseInt(move);
                         
                         client.askServerToplayeRPS(nameString,played);
+                        break;
                     }
+                    case "b": {
+                        System.out.println("Leaderboard: ");
+                        client.askServerToListLeaders();
+                        break;
+                    }
+                    
                 }
             }
             

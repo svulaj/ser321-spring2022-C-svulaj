@@ -297,8 +297,8 @@ service/Connection.java
  service.Connection
  service.Connection$1
  service.Connection$Builder
-service/HometownsSearchRequestOrBuilder.java
- service.HometownsSearchRequestOrBuilder
+examples/TestJson.java
+ test.TestJson
 service/ClientRequestOrBuilder.java
  service.ClientRequestOrBuilder
 service/HometownsReadResponse.java
@@ -315,8 +315,8 @@ service/JokeSetReq.java
  service.JokeSetReq
  service.JokeSetReq$1
  service.JokeSetReq$Builder
-examples/TestJson.java
- test.TestJson
+service/HometownsSearchRequestOrBuilder.java
+ service.HometownsSearchRequestOrBuilder
 service/Time.java
  service.Time
  service.Time$1
