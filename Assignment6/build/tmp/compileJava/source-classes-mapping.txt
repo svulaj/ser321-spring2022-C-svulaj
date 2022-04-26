@@ -1,13 +1,7 @@
-service/JokeSetRes.java
- service.JokeSetRes
- service.JokeSetRes$1
- service.JokeSetRes$Builder
 service/TimerRequestOrBuilder.java
  service.TimerRequestOrBuilder
 service/HometownOrBuilder.java
  service.HometownOrBuilder
-examples/grpcClient/JokeImpl.java
- example.grpcclient.JokeImpl
 examples/grpcClient/Register.java
  example.grpcclient.Register
 service/WeatherGrpc.java
@@ -23,10 +17,6 @@ service/WeatherGrpc.java
  service.WeatherGrpc$WeatherImplBase
  service.WeatherGrpc$WeatherMethodDescriptorSupplier
  service.WeatherGrpc$WeatherStub
-service/GetServicesReqOrBuilder.java
- service.GetServicesReqOrBuilder
-service/EchoProto.java
- service.EchoProto
 service/ServerListResOrBuilder.java
  service.ServerListResOrBuilder
 service/SingleServerResOrBuilder.java
@@ -37,18 +27,10 @@ service/JokeReq.java
  service.JokeReq$Builder
 service/RockPaperScissorsProto.java
  service.RockPaperScissorsProto
-service/ServerResponseOrBuilder.java
- service.ServerResponseOrBuilder
-service/RegisterReq.java
- service.RegisterReq
- service.RegisterReq$1
- service.RegisterReq$Builder
 service/ServerListRes.java
  service.ServerListRes
  service.ServerListRes$1
  service.ServerListRes$Builder
-service/HometownsProto.java
- service.HometownsProto
 service/TimerResponse.java
  service.TimerResponse
  service.TimerResponse$1
@@ -72,25 +54,16 @@ service/RegistryGrpc.java
  service.RegistryGrpc$RegistryImplBase
  service.RegistryGrpc$RegistryMethodDescriptorSupplier
  service.RegistryGrpc$RegistryStub
+service/AddressSearchRequest.java
+ service.AddressSearchRequest
+ service.AddressSearchRequest$1
+ service.AddressSearchRequest$Builder
 service/TimerProto.java
  service.TimerProto
-examples/DiscoveryServers.java
- test.DiscoveryServers
- test.DiscoveryServers$DiscoveryThread
-service/WeatherCoordinateRequestOrBuilder.java
- service.WeatherCoordinateRequestOrBuilder
 service/LeaderboardEntryOrBuilder.java
  service.LeaderboardEntryOrBuilder
-service/TimerResponseOrBuilder.java
- service.TimerResponseOrBuilder
 examples/grpcClient/RegistryAnswerImpl.java
  example.grpcclient.RegistryAnswerImpl
-service/FindServersReqOrBuilder.java
- service.FindServersReqOrBuilder
-service/LeaderboardEntry.java
- service.LeaderboardEntry
- service.LeaderboardEntry$1
- service.LeaderboardEntry$Builder
 service/EchoGrpc.java
  service.EchoGrpc
  service.EchoGrpc$1
@@ -116,16 +89,174 @@ service/ServicesListRes.java
  service.ServicesListRes
  service.ServicesListRes$1
  service.ServicesListRes$Builder
-service/CitiesResponse.java
- service.CitiesResponse
- service.CitiesResponse$1
- service.CitiesResponse$Builder
 examples/grpcClient/EchoImpl.java
  example.grpcclient.EchoImpl
 service/WeatherResponse.java
  service.WeatherResponse
  service.WeatherResponse$1
  service.WeatherResponse$Builder
+service/AddressOrBuilder.java
+ service.AddressOrBuilder
+examples/grpcClient/AddressBookImpl.java
+ example.grpcclient.AddressBookImpl
+service/HometownsReadResponseOrBuilder.java
+ service.HometownsReadResponseOrBuilder
+service/GetServicesReq.java
+ service.GetServicesReq
+ service.GetServicesReq$1
+ service.GetServicesReq$Builder
+service/RegisterReqOrBuilder.java
+ service.RegisterReqOrBuilder
+service/JokeResOrBuilder.java
+ service.JokeResOrBuilder
+service/PlayReqOrBuilder.java
+ service.PlayReqOrBuilder
+service/TimeOrBuilder.java
+ service.TimeOrBuilder
+service/AddressBookGrpc.java
+ service.AddressBookGrpc
+ service.AddressBookGrpc$1
+ service.AddressBookGrpc$2
+ service.AddressBookGrpc$3
+ service.AddressBookGrpc$AddressBookBaseDescriptorSupplier
+ service.AddressBookGrpc$AddressBookBlockingStub
+ service.AddressBookGrpc$AddressBookFileDescriptorSupplier
+ service.AddressBookGrpc$AddressBookFutureStub
+ service.AddressBookGrpc$AddressBookImplBase
+ service.AddressBookGrpc$AddressBookMethodDescriptorSupplier
+ service.AddressBookGrpc$AddressBookStub
+ service.AddressBookGrpc$MethodHandlers
+service/AddressWriteRequestOrBuilder.java
+ service.AddressWriteRequestOrBuilder
+service/HometownsWriteResponseOrBuilder.java
+ service.HometownsWriteResponseOrBuilder
+service/ClientRequest.java
+ service.ClientRequest
+ service.ClientRequest$1
+ service.ClientRequest$Builder
+service/TimerListOrBuilder.java
+ service.TimerListOrBuilder
+service/Address.java
+ service.Address
+ service.Address$1
+ service.Address$Builder
+service/JokeSetResOrBuilder.java
+ service.JokeSetResOrBuilder
+service/LeaderboardRes.java
+ service.LeaderboardRes
+ service.LeaderboardRes$1
+ service.LeaderboardRes$Builder
+service/TimerList.java
+ service.TimerList
+ service.TimerList$1
+ service.TimerList$Builder
+service/FindServerReqOrBuilder.java
+ service.FindServerReqOrBuilder
+service/FindServersReq.java
+ service.FindServersReq
+ service.FindServersReq$1
+ service.FindServersReq$Builder
+service/Hometown.java
+ service.Hometown
+ service.Hometown$1
+ service.Hometown$Builder
+service/AddressBookResponse.java
+ service.AddressBookResponse
+ service.AddressBookResponse$1
+ service.AddressBookResponse$Builder
+buffers/RequestProtos.java
+ buffers.RequestProtos
+ buffers.RequestProtos$1
+ buffers.RequestProtos$Request
+ buffers.RequestProtos$Request$1
+ buffers.RequestProtos$Request$BodyCase
+ buffers.RequestProtos$Request$Builder
+ buffers.RequestProtos$Request$Connection
+ buffers.RequestProtos$Request$Connection$1
+ buffers.RequestProtos$Request$Connection$Builder
+ buffers.RequestProtos$Request$ConnectionOrBuilder
+ buffers.RequestProtos$Request$RequestType
+ buffers.RequestProtos$Request$RequestType$1
+ buffers.RequestProtos$RequestOrBuilder
+examples/grpcClient/RockPaperScissorsImpl.java
+ example.grpcclient.RockPaperScissorsImpl
+service/PlayResOrBuilder.java
+ service.PlayResOrBuilder
+service/AddressBookResponseOrBuilder.java
+ service.AddressBookResponseOrBuilder
+service/HometownsSearchRequestOrBuilder.java
+ service.HometownsSearchRequestOrBuilder
+service/ClientRequestOrBuilder.java
+ service.ClientRequestOrBuilder
+service/JokeSetReq.java
+ service.JokeSetReq
+ service.JokeSetReq$1
+ service.JokeSetReq$Builder
+examples/grpcClient/Node.java
+ example.grpcclient.Node
+ example.grpcclient.Node$1
+service/Time.java
+ service.Time
+ service.Time$1
+ service.Time$Builder
+service/WeatherProto.java
+ service.WeatherProto
+service/LeaderboardResOrBuilder.java
+ service.LeaderboardResOrBuilder
+examples/grpcClient/TimerImpl.java
+ example.grpcclient.TimerImpl
+ example.grpcclient.TimerImpl$ClockObject
+ example.grpcclient.TimerImpl$ClockObject$1
+examples/TestJson.java
+ test.TestJson
+service/JokeGrpc.java
+ service.JokeGrpc
+ service.JokeGrpc$1
+ service.JokeGrpc$2
+ service.JokeGrpc$3
+ service.JokeGrpc$JokeBaseDescriptorSupplier
+ service.JokeGrpc$JokeBlockingStub
+ service.JokeGrpc$JokeFileDescriptorSupplier
+ service.JokeGrpc$JokeFutureStub
+ service.JokeGrpc$JokeImplBase
+ service.JokeGrpc$JokeMethodDescriptorSupplier
+ service.JokeGrpc$JokeStub
+ service.JokeGrpc$MethodHandlers
+service/JokeSetRes.java
+ service.JokeSetRes
+ service.JokeSetRes$1
+ service.JokeSetRes$Builder
+examples/grpcClient/JokeImpl.java
+ example.grpcclient.JokeImpl
+service/GetServicesReqOrBuilder.java
+ service.GetServicesReqOrBuilder
+service/EchoProto.java
+ service.EchoProto
+service/ServerResponseOrBuilder.java
+ service.ServerResponseOrBuilder
+service/RegisterReq.java
+ service.RegisterReq
+ service.RegisterReq$1
+ service.RegisterReq$Builder
+service/HometownsProto.java
+ service.HometownsProto
+examples/DiscoveryServers.java
+ test.DiscoveryServers
+ test.DiscoveryServers$DiscoveryThread
+service/WeatherCoordinateRequestOrBuilder.java
+ service.WeatherCoordinateRequestOrBuilder
+service/TimerResponseOrBuilder.java
+ service.TimerResponseOrBuilder
+service/FindServersReqOrBuilder.java
+ service.FindServersReqOrBuilder
+service/LeaderboardEntry.java
+ service.LeaderboardEntry
+ service.LeaderboardEntry$1
+ service.LeaderboardEntry$Builder
+service/CitiesResponse.java
+ service.CitiesResponse
+ service.CitiesResponse$1
+ service.CitiesResponse$Builder
 service/HometownsGrpc.java
  service.HometownsGrpc
  service.HometownsGrpc$1
@@ -143,16 +274,12 @@ service/JokeSetReqOrBuilder.java
  service.JokeSetReqOrBuilder
 service/JokeProto.java
  service.JokeProto
+service/AddressBookProto.java
+ service.AddressBookProto
 service/CitiesResponseOrBuilder.java
  service.CitiesResponseOrBuilder
-service/HometownsReadResponseOrBuilder.java
- service.HometownsReadResponseOrBuilder
 service/RegistryProto.java
  service.RegistryProto
-service/GetServicesReq.java
- service.GetServicesReq
- service.GetServicesReq$1
- service.GetServicesReq$Builder
 buffers/ResponseProtos.java
  buffers.ResponseProtos
  buffers.ResponseProtos$1
@@ -196,91 +323,30 @@ service/WeatherCityRequestOrBuilder.java
  service.WeatherCityRequestOrBuilder
 service/HometownsWriteRequestOrBuilder.java
  service.HometownsWriteRequestOrBuilder
-service/RegisterReqOrBuilder.java
- service.RegisterReqOrBuilder
-service/JokeResOrBuilder.java
- service.JokeResOrBuilder
-service/PlayReqOrBuilder.java
- service.PlayReqOrBuilder
 service/FindServerReq.java
  service.FindServerReq
  service.FindServerReq$1
  service.FindServerReq$Builder
-service/TimeOrBuilder.java
- service.TimeOrBuilder
 service/WeatherCoordinateRequest.java
  service.WeatherCoordinateRequest
  service.WeatherCoordinateRequest$1
  service.WeatherCoordinateRequest$Builder
 examples/TestProtobuf.java
  test.TestProtobuf
-service/HometownsWriteResponseOrBuilder.java
- service.HometownsWriteResponseOrBuilder
-service/ClientRequest.java
- service.ClientRequest
- service.ClientRequest$1
- service.ClientRequest$Builder
-service/TimerListOrBuilder.java
- service.TimerListOrBuilder
-service/JokeSetResOrBuilder.java
- service.JokeSetResOrBuilder
 service/HometownsWriteRequest.java
  service.HometownsWriteRequest
  service.HometownsWriteRequest$1
  service.HometownsWriteRequest$Builder
-service/LeaderboardRes.java
- service.LeaderboardRes
- service.LeaderboardRes$1
- service.LeaderboardRes$Builder
-service/TimerList.java
- service.TimerList
- service.TimerList$1
- service.TimerList$Builder
-service/FindServerReqOrBuilder.java
- service.FindServerReqOrBuilder
-service/FindServersReq.java
- service.FindServersReq
- service.FindServersReq$1
- service.FindServersReq$Builder
-service/Hometown.java
- service.Hometown
- service.Hometown$1
- service.Hometown$Builder
+service/AddressWriteRequest.java
+ service.AddressWriteRequest
+ service.AddressWriteRequest$1
+ service.AddressWriteRequest$Builder
 service/ServicesListResOrBuilder.java
  service.ServicesListResOrBuilder
 service/HometownsWriteResponse.java
  service.HometownsWriteResponse
  service.HometownsWriteResponse$1
  service.HometownsWriteResponse$Builder
-buffers/RequestProtos.java
- buffers.RequestProtos
- buffers.RequestProtos$1
- buffers.RequestProtos$Request
- buffers.RequestProtos$Request$1
- buffers.RequestProtos$Request$BodyCase
- buffers.RequestProtos$Request$Builder
- buffers.RequestProtos$Request$Connection
- buffers.RequestProtos$Request$Connection$1
- buffers.RequestProtos$Request$Connection$Builder
- buffers.RequestProtos$Request$ConnectionOrBuilder
- buffers.RequestProtos$Request$RequestType
- buffers.RequestProtos$Request$RequestType$1
- buffers.RequestProtos$RequestOrBuilder
-service/JokeGrpc.java
- service.JokeGrpc
- service.JokeGrpc$1
- service.JokeGrpc$2
- service.JokeGrpc$3
- service.JokeGrpc$JokeBaseDescriptorSupplier
- service.JokeGrpc$JokeBlockingStub
- service.JokeGrpc$JokeFileDescriptorSupplier
- service.JokeGrpc$JokeFutureStub
- service.JokeGrpc$JokeImplBase
- service.JokeGrpc$JokeMethodDescriptorSupplier
- service.JokeGrpc$JokeStub
- service.JokeGrpc$MethodHandlers
-service/PlayResOrBuilder.java
- service.PlayResOrBuilder
 service/JokeRes.java
  service.JokeRes
  service.JokeRes$1
@@ -297,10 +363,8 @@ service/Connection.java
  service.Connection
  service.Connection$1
  service.Connection$Builder
-examples/TestJson.java
- test.TestJson
-service/ClientRequestOrBuilder.java
- service.ClientRequestOrBuilder
+service/AddressSearchRequestOrBuilder.java
+ service.AddressSearchRequestOrBuilder
 service/HometownsReadResponse.java
  service.HometownsReadResponse
  service.HometownsReadResponse$1
@@ -311,24 +375,10 @@ service/HometownsSearchRequest.java
  service.HometownsSearchRequest$Builder
 service/JokeReqOrBuilder.java
  service.JokeReqOrBuilder
-service/JokeSetReq.java
- service.JokeSetReq
- service.JokeSetReq$1
- service.JokeSetReq$Builder
-service/HometownsSearchRequestOrBuilder.java
- service.HometownsSearchRequestOrBuilder
-service/Time.java
- service.Time
- service.Time$1
- service.Time$Builder
-service/WeatherProto.java
- service.WeatherProto
 service/TimerRequest.java
  service.TimerRequest
  service.TimerRequest$1
  service.TimerRequest$Builder
-service/LeaderboardResOrBuilder.java
- service.LeaderboardResOrBuilder
 service/TimerGrpc.java
  service.TimerGrpc
  service.TimerGrpc$1
@@ -342,14 +392,5 @@ service/TimerGrpc.java
  service.TimerGrpc$TimerImplBase
  service.TimerGrpc$TimerMethodDescriptorSupplier
  service.TimerGrpc$TimerStub
-examples/grpcClient/TimerImpl.java
- example.grpcclient.TimerImpl
- example.grpcclient.TimerImpl$ClockObject
- example.grpcclient.TimerImpl$ClockObject$1
-examples/grpcClient/RockPaperScissorsImpl.java
- example.grpcclient.RockPaperScissorsImpl
 examples/grpcClient/EchoClient.java
  example.grpcclient.EchoClient
-examples/grpcClient/Node.java
- example.grpcclient.Node
- example.grpcclient.Node$1

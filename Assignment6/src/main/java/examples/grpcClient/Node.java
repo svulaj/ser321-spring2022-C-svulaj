@@ -39,6 +39,7 @@ public class Node {
         .addService(new JokeImpl())
         .addService(new TimerImpl())
         .addService(new RockPaperScissorsImpl())
+        .addService(new AddressBookImpl())
         .addService(new RegistryAnswerImpl(services)).build().start();
 
     for (var service : server.getServices()) {

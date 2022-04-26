@@ -70,6 +70,8 @@ sourceSets {
 
  def regOn = false
 
+ def auto = 0;
+
 // task reading in the arguments if any given, if not the default from above will be used
 task arguments {
     if (project.hasProperty("nodeName")) {
@@ -101,6 +103,9 @@ task arguments {
     }
     if (project.hasProperty("regOn")) {
       regOn = project.getProperty("regOn")
+    }
+    if (project.hasProperty("auto")) {
+      auto= project.getProperty("auto")
     }
 }
 
@@ -156,6 +161,8 @@ task runClient(type: JavaExec) {
   args grpcPort
   args message 
   args regOn
+  args auto
+  
 }
 
 // runs a service node which already has the echo and joke service included

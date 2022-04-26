@@ -1,0 +1,50 @@
+//Description:
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "AddressBookProto";
+
+import "google/protobuf/empty.proto";
+
+package services;
+
+service AddressBook {
+  rpc list (google.protobuf.Empty) returns (AddressBookResponse) {}
+  rpc add (AddressWriteRequest) returns (AddressBookResponse) {}
+  rpc find (AddressSearchRequest) returns (AddressBookResponse) {}
+}
+
+// The response message when reading the entries, either by read or search
+message AddressBookResponse {
+  bool isSuccess = 1;
+  Address address = 2;
+  string message = 3;
+  repeated Address book = 4; 
+  string error = 5;
+}
+
+
+// The request message to search for classmates in a city
+message AddressSearchRequest {
+    string name = 1; 
+}
+
+
+// The request message adding a new entry to the server
+message AddressWriteRequest {
+    Address address = 1;
+}
+
+
+
+message Address {
+    string name = 1; 
+    string city = 2; 
+    string state = 3; 
+    string street = 4;
+    string phone=5;
+}
+
+

@@ -3,6 +3,8 @@ package example.grpcclient;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import service.*;
 import test.TestProtobuf;
@@ -29,6 +31,7 @@ public class EchoClient {
   
   private final TimerGrpc.TimerBlockingStub timerStub;
   private final RockPaperScissorsGrpc.RockPaperScissorsBlockingStub rpsStub;
+  private final AddressBookGrpc.AddressBookBlockingStub addStub;
   
   /** Construct client for accessing server using the existing channel. */
   public EchoClient(Channel channel, Channel regChannel) {
@@ -43,6 +46,7 @@ public class EchoClient {
     blockingStub3 = RegistryGrpc.newBlockingStub(regChannel);
     timerStub = TimerGrpc.newBlockingStub(channel);
     rpsStub = RockPaperScissorsGrpc.newBlockingStub(channel);
+    addStub = AddressBookGrpc.newBlockingStub(channel);
   }
 
   public void askServerToParrot(String message) {
@@ -177,6 +181,69 @@ public class EchoClient {
   
   
  //============================================================================================
+  //ADDRESS BOOK SECTION
+  
+  public void askServerToAddAddress(String name, String city, String state, String street, String phone) {
+      Address.Builder address = Address.newBuilder();
+      address.setName(name).setCity(city).setState(state).setStreet(street).setPhone(phone);
+      
+      AddressWriteRequest request = AddressWriteRequest.newBuilder().setAddress(address).build();
+      
+      
+      
+      AddressBookResponse response;
+      
+      
+          try {
+            response = addStub.add(request);
+          } catch (Exception e) {
+            System.err.println("RPC failed: " + e.getMessage());
+            return;
+          }
+          System.out.println("Received from server: " + response.getIsSuccess());
+          System.out.println("Received from server: " + response.getMessage());
+        }
+  
+  public void askServerTofindAddress(String name) {
+      AddressSearchRequest request = AddressSearchRequest.newBuilder().setName(name).build();
+      AddressBookResponse response;
+      
+      try {
+          response = addStub.find(request);
+        } catch (Exception e) {
+          System.err.println("RPC failed: " + e.getMessage());
+          return;
+        }
+      System.out.println("Received from server: ");
+      System.out.println(response.getAddress());
+      
+  }
+  
+  public void askServerToListAddress() {
+      Empty empt = Empty.newBuilder().build();
+      
+      
+      AddressBookResponse response;
+      
+      
+      try {
+        response = addStub.list(empt);
+        
+        
+        
+      } catch (Exception e) {
+        System.err.println("RPC failed: " + e.getMessage());
+        return;
+      }
+      
+      for(Address z : response.getBookList()) {
+          System.out.println("Name: " + z.getName() + " -->City: " + z.getCity() + " -->State: " + z.getState() + " -->Street: " + z.getStreet() + " -->Phone: " + z.getPhone());
+      }
+  }
+  
+  
+//============================================================================================
+  
   public void askForJokes(int num) {
     JokeReq request = JokeReq.newBuilder().setNumber(num).build();
     JokeRes response;
@@ -245,7 +312,7 @@ public class EchoClient {
   
   
   public static void main(String[] args) throws Exception {
-    if (args.length != 6) {
+    if (args.length != 7) {
       System.out
           .println("Expected arguments: <host(String)> <port(int)> <regHost(string)> <regPort(int)> <message(String)> <regOn(bool)>");
       System.exit(1);
@@ -255,6 +322,7 @@ public class EchoClient {
     String host = args[0];
     String regHost = args[2];
     String message = args[4];
+    String autoString = args[6];
     try {
       port = Integer.parseInt(args[1]);
       regPort = Integer.parseInt(args[3]);
@@ -263,6 +331,7 @@ public class EchoClient {
       System.exit(2);
     }
 
+    //System.out.println("args 7: " + args[6]);
     // Create a communication channel to the server, known as a Channel. Channels
     // are thread-safe
     // and reusable. It is common to create channels at the beginning of your
@@ -281,77 +350,244 @@ public class EchoClient {
         EchoClient client = new EchoClient(channel, regChannel);
         
         
+        
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        while(true) {
-            System.out.println("What service would you like to use today?"); // NO ERROR handling of wrong input here.
-            System.out.println("Choose you Services: Timer = 1 || Rock,Paper,Scissors = 2");
-            String choice = reader.readLine();
-            
-            switch (choice) {
-            case "1": {
-                System.out.println("start = a, check = b, close = c, list = d");
-                String choice2 = reader.readLine();
+        if(autoString.equals("0")) {
+            while(true) {
+                System.out.println("What service would you like to use today?"); // NO ERROR handling of wrong input here.
+                System.out.println("Choose you Services: Timer = 1 || Rock Paper Scissors = 2 || Address Book = 3");
+                String choice = reader.readLine();
                 
-                switch (choice2) {
-                    case "a": {
-                        
-                        System.out.println("Name of timer to start?");
-                        String name = reader.readLine();
-                        client.askServerToStartTimer(name);
-                        break;
-                    }
-                    case "b": {
-                        
-                        System.out.println("Name of timer to check?");
-                        String name = reader.readLine();
-                        client.askServerToCheckTimer(name);
-                        break;
-                    }
-                    case "c": {
-                        
-                        System.out.println("Name of timer to close?");
-                        String name = reader.readLine();
-                        client.askServerToCloseTimer(name);
-                        break;
-                    }
-                    case "d": {
-                        client.askServerToListTimers();
-                        System.out.println("List returned: ");
-                        break;
-                    }
-                }
-            
-            }
-            case "2": {
-                System.out.println("Play = a, Leaderboard = b");
-                String choice2 = reader.readLine();
-                
-                switch (choice2) {
-                    case "a": {
-                        System.out.println("whats your name?");
-                        String nameString = reader.readLine();
-                        
-                        System.out.println("Enter: 0 = rock, 1 = paper, 2 = scissor");
-                        String move = reader.readLine();
-                        int played = Integer.parseInt(move);
-                        
-                        client.askServerToplayeRPS(nameString,played);
-                        break;
-                    }
-                    case "b": {
-                        System.out.println("Leaderboard: ");
-                        client.askServerToListLeaders();
-                        break;
-                    }
+                switch (choice) {
+                case "1": {
+                    System.out.println("start = a, check = b, close = c, list = d");
+                    String choice2 = reader.readLine();
                     
+                    switch (choice2) {
+                        case "a": {
+                            
+                            System.out.println("Name of timer to start?");
+                            String name = reader.readLine();
+                            client.askServerToStartTimer(name);
+                            break;
+                        }
+                        case "b": {
+                            
+                            System.out.println("Name of timer to check?");
+                            String name = reader.readLine();
+                            client.askServerToCheckTimer(name);
+                            break;
+                        }
+                        case "c": {
+                            
+                            System.out.println("Name of timer to close?");
+                            String name = reader.readLine();
+                            client.askServerToCloseTimer(name);
+                            break;
+                        }
+                        case "d": {
+                            client.askServerToListTimers();
+                            System.out.println("List returned: ");
+                            break;
+                        }
+                    }
+                
                 }
+                case "2": {
+                    System.out.println("Play = a, Leaderboard = b");
+                    String choice2 = reader.readLine();
+                    
+                    switch (choice2) {
+                        case "a": {
+                            System.out.println("whats your name?");
+                            String nameString = reader.readLine();
+                            
+                            System.out.println("Enter: 0 = rock, 1 = paper, 2 = scissor");
+                            String move = reader.readLine();
+                            int played = Integer.parseInt(move);
+                            
+                            client.askServerToplayeRPS(nameString,played);
+                            break;
+                        }
+                        case "b": {
+                            System.out.println("Leaderboard: ");
+                            client.askServerToListLeaders();
+                            break;
+                        }
+                        
+                    }
+                }
+                case "3": {
+                    System.out.println("add to Address book = a || find address = b || list addresses = c");
+                    String choice3 = reader.readLine();
+                    
+                    switch (choice3) {
+                        case "a": {
+                            System.out.println("address test:");
+                            System.out.println("Enter name: ");
+                            String addNameString = reader.readLine();
+                            System.out.println("Enter city: ");
+                            String addCityString = reader.readLine();
+                            System.out.println("Enter state: ");
+                            String addStateString = reader.readLine();
+                            System.out.println("Enter street: ");
+                            String addStreetString = reader.readLine();
+                            System.out.println("Enter phone: ");
+                            String addphoneString = reader.readLine();
+                            client.askServerToAddAddress(addNameString,addCityString,addStateString,addStreetString,addphoneString);
+                            break;
+                        }
+                        case "b": {
+                            System.out.println("Enter the name that you want to find: ");
+                            String nameToFind = reader.readLine();
+                            client.askServerTofindAddress(nameToFind);
+                            break;
+                        }
+                        case "c": {
+                            System.out.println("List of addresses: ");
+                            client.askServerToListAddress();
+                            break;
+                        }
+                        
+                    }
+                }
+                
+                }
+                
+                
+                
             }
+        }else if(autoString.equals("1")) {
+            int count = 0;
             
-            }
-            
-            
-            
+                
+                System.out.println("What service would you like to use today?"); // NO ERROR handling of wrong input here.
+                System.out.println("Choose you Services: Timer = 1 || Rock,Paper,Scissors = 2");
+                System.out.println("===================================================");
+                System.out.println("Timer has been chosen");
+                Thread.sleep(5000);
+                
+                String name = "SER321 Student#1";
+                System.out.println("Starting timer for: " + name);
+                client.askServerToStartTimer(name);
+                Thread.sleep(5000);
+                
+                String name2 = "SER321 Student#2";
+                System.out.println("Starting timer for: " + name2);
+                client.askServerToStartTimer(name2);
+                Thread.sleep(5000);
+                
+                System.out.println("Checking timer for " + name);
+                client.askServerToCheckTimer(name);
+                System.out.println("Checking timer for " + name2);
+                client.askServerToCheckTimer(name2);
+                
+                System.out.println("\n");
+                System.out.println("Closing timer for: " + name);
+                client.askServerToCloseTimer(name);
+                Thread.sleep(10000);
+                System.out.println("\n");
+                
+                System.out.println("Returning list....");
+                Thread.sleep(5000);
+                System.out.println("List returned: ");
+                client.askServerToListTimers();
+                Thread.sleep(5000);
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("Rock Paper Scissors has been chosen");
+                Thread.sleep(5000);
+                
+                String nameString = "SER Student#3";
+                System.out.println("Playing RPS with " + nameString);
+                System.out.println(nameString + " is Playing rock");
+                int played = 0;
+                client.askServerToplayeRPS(nameString,played);
+                Thread.sleep(1000);
+                
+                String nameString2 = "SER Student#4";
+                System.out.println(nameString2 + " is Playing paper");
+                played = 1;
+                client.askServerToplayeRPS(nameString2,played);
+                Thread.sleep(1000);
+                
+                String nameString3 = "SER Student#5";
+                System.out.println(nameString3 + " is Playing scissors");
+                played = 2;
+                client.askServerToplayeRPS(nameString3,played);
+                Thread.sleep(3000);
+                
+                System.out.println("Leaderboard: ");
+                client.askServerToListLeaders();
+                Thread.sleep(3000);
+                
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                System.out.println("===================================================");
+                Thread.sleep(3000);
+
+                System.out.println("Adding 1 address.....");
+                Thread.sleep(3000);
+                System.out.println("Adding name: ");
+                String addNameString = "SER Student#1";
+                System.out.println("Adding city: ");
+                String addCityString = "Phoenix";
+                System.out.println("Adding state: ");
+                String addStateString = "Arizona";
+                System.out.println("Adding street: ");
+                String addStreetString = "Willaiams Field Rd";
+                System.out.println("Adding phone: ");
+                String addphoneString = "000-000-00000";
+                client.askServerToAddAddress(addNameString,addCityString,addStateString,addStreetString,addphoneString);
+                Thread.sleep(3000);
+                
+                System.out.println("Adding 2nd address.....");
+                Thread.sleep(3000);
+                System.out.println("Adding name: ");
+                addNameString = "SER Student#2";
+                System.out.println("Adding city: ");
+                addCityString = "Detroit";
+                System.out.println("Adding state: ");
+                addStateString = "Michigan";
+                System.out.println("Adding street: ");
+                addStreetString = "8 Mile rd";
+                System.out.println("Adding phone: ");
+                addphoneString = "111-111-1111";
+                client.askServerToAddAddress(addNameString,addCityString,addStateString,addStreetString,addphoneString);
+                Thread.sleep(3000);
+                
+                System.out.println("Adding 3rd address.....");
+                Thread.sleep(3000);
+                System.out.println("Adding name: ");
+                addNameString = "SER Student#3";
+                System.out.println("Adding city: ");
+                addCityString = "Los Angelos";
+                System.out.println("Adding state: ");
+                addStateString = "California";
+                System.out.println("Adding street: ");
+                addStreetString = "Hollywood Blvd";
+                System.out.println("Adding phone: ");
+                addphoneString = "222-222-2222";
+                client.askServerToAddAddress(addNameString,addCityString,addStateString,addStreetString,addphoneString);
+                Thread.sleep(3000);
+                
+                System.out.println("Attempting to Find Student: SER Student#2 ");
+                Thread.sleep(3000);
+                String nameToFind = "SER Student#2";
+                client.askServerTofindAddress(nameToFind);
+                Thread.sleep(3000);
+                
+                System.out.println("Listing all addresses: ");
+                Thread.sleep(3000);
+                client.askServerToListAddress();
+                Thread.sleep(3000);
         }
+        
         
         
         
