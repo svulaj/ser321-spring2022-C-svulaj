@@ -355,7 +355,7 @@ public class EchoClient {
         if(autoString.equals("0")) {
             while(true) {
                 System.out.println("What service would you like to use today?"); // NO ERROR handling of wrong input here.
-                System.out.println("Choose you Services: Timer = 1 || Rock Paper Scissors = 2 || Address Book = 3");
+                System.out.println("Choose you Services: Timer = 1 || Rock Paper Scissors = 2 || Address Book = 3 || Exit = 4");
                 String choice = reader.readLine();
                 
                 switch (choice) {
@@ -391,7 +391,7 @@ public class EchoClient {
                             break;
                         }
                     }
-                
+                    break;
                 }
                 case "2": {
                     System.out.println("Play = a, Leaderboard = b");
@@ -402,11 +402,34 @@ public class EchoClient {
                             System.out.println("whats your name?");
                             String nameString = reader.readLine();
                             
-                            System.out.println("Enter: 0 = rock, 1 = paper, 2 = scissor");
-                            String move = reader.readLine();
-                            int played = Integer.parseInt(move);
                             
-                            client.askServerToplayeRPS(nameString,played);
+                            
+                            boolean correct = false;
+                            String move = "";
+                            int count = 0;
+                            while(correct == false) {
+                                System.out.println("Enter: 0 = rock, 1 = paper, 2 = scissor");
+                                move = reader.readLine();
+                                count = move.length();
+                                
+                                for(int i = 0; i < move.length();i++) {
+                                    Character temp = move.charAt(i);
+                                    if(Character.isDigit(temp)) {
+                                        correct = true;
+                                    }else {
+                                        System.out.println("not a digit");
+                                    }
+                                }
+                            }
+                            
+                            
+                            try {
+                                int played = Integer.parseInt(move);
+                                client.askServerToplayeRPS(nameString,played);
+                                break;
+                            }catch(NumberFormatException e) {
+                                e.printStackTrace();
+                            }
                             break;
                         }
                         case "b": {
@@ -416,6 +439,7 @@ public class EchoClient {
                         }
                         
                     }
+                    break;
                 }
                 case "3": {
                     System.out.println("add to Address book = a || find address = b || list addresses = c");
@@ -450,8 +474,12 @@ public class EchoClient {
                         }
                         
                     }
+                    break;
                 }
-                
+                case "4": {
+                    System.exit(0);
+                    break;
+                }
                 }
                 
                 

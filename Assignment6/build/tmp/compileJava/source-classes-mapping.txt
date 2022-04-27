@@ -184,8 +184,8 @@ service/PlayResOrBuilder.java
  service.PlayResOrBuilder
 service/AddressBookResponseOrBuilder.java
  service.AddressBookResponseOrBuilder
-service/HometownsSearchRequestOrBuilder.java
- service.HometownsSearchRequestOrBuilder
+examples/grpcClient/EchoClient.java
+ example.grpcclient.EchoClient
 service/ClientRequestOrBuilder.java
  service.ClientRequestOrBuilder
 service/JokeSetReq.java
@@ -392,5 +392,5 @@ service/TimerGrpc.java
  service.TimerGrpc$TimerImplBase
  service.TimerGrpc$TimerMethodDescriptorSupplier
  service.TimerGrpc$TimerStub
-examples/grpcClient/EchoClient.java
- example.grpcclient.EchoClient
+service/HometownsSearchRequestOrBuilder.java
+ service.HometownsSearchRequestOrBuilder

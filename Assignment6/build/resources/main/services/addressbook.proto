@@ -1,4 +1,7 @@
-//Description:
+// Description: This service allows for the creation of an address book.
+// list allows for the listing of all entries and their respective data.
+// add allows the user to add an entry to the book.
+// find allows the user to look up an entry(via name) from the book.
 
 syntax = "proto3";
 
